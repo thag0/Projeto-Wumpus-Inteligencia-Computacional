@@ -419,9 +419,9 @@ public class RedeNeural implements Cloneable, Serializable{
    /**
     * Salva a classe da rede num arquivo "rede.dat" no mesmo diretório que contém o código com o main
     */
-   public void salvarRedeArquivo(){
+   public void salvarRedeArquivo(String caminho){
       try{
-         FileOutputStream arquivo = new FileOutputStream("rede.dat");
+         FileOutputStream arquivo = new FileOutputStream(caminho);
          ObjectOutputStream objeto = new ObjectOutputStream(arquivo);
 
          objeto.writeObject(this);
@@ -438,11 +438,11 @@ public class RedeNeural implements Cloneable, Serializable{
     * Lê o arquivo "rede.dat" que deve estar no mesmo diretório que o código com o main
     * @return Rede lida no arquivo
     */
-   public RedeNeural lerRedeArquivo(){
+   public RedeNeural lerRedeArquivo(String caminho){
       RedeNeural rede = null;
 
       try{
-         FileInputStream arquivo = new FileInputStream("rede.dat");
+         FileInputStream arquivo = new FileInputStream(caminho);
          ObjectInputStream objeto = new ObjectInputStream(arquivo);
 
          rede = (RedeNeural) objeto.readObject();

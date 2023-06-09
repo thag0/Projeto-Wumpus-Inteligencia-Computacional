@@ -597,8 +597,8 @@ public class Main{
             if((agente.getX() == xInicialAgente) && (agente.getY() == yInicialAgente)){
                 agente.fitness += 4000;
                 System.out.println("Agente[" + indiceAgente + "] ganhou a partida");
-                Thread.sleep((long)(1000 * 0.8));
-                agente.rede.salvarRedeArquivo();
+                Thread.sleep((long)(1000 * 0.07));
+                agente.rede.salvarRedeArquivo("./melhores-redes/rede-fit-" + agente.fitness + ".dat");
                 return true;
             }
         }
