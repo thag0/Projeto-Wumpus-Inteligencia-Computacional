@@ -28,6 +28,7 @@ public class RedeNeural implements Cloneable, Serializable{
    final int ativacaoTanH = 5;
    final int ativacaoTanHDx = 6;
    final int ativacaoLeakyRelu = 7;
+   final int ativacaoArgmax = 8;//implementar
    
    int funcaoAtivacao = ativacaoTanH;
    int funcaoAtivacaoSaida = ativacaoReluDx;
@@ -260,8 +261,8 @@ public class RedeNeural implements Cloneable, Serializable{
     * @param saida função de ativação da ultima camada oculta para a saída
     */
    public void configurarFuncaoAtivacao(int ocultas, int saida){
-      if(ocultas < 0 || ocultas > 7) funcaoAtivacao = 1;
-      if(saida < 0 || saida > 7) funcaoAtivacaoSaida = 2;
+      if(ocultas < 1 || ocultas > 7) funcaoAtivacao = 1;
+      if(saida < 1 || saida > 7) funcaoAtivacaoSaida = 2;
 
       funcaoAtivacao = ocultas;
       funcaoAtivacaoSaida = saida;
@@ -327,7 +328,7 @@ public class RedeNeural implements Cloneable, Serializable{
 
 
    private double sigmoid(double valor){
-      return 1 / (1 + Math.exp(-valor));
+      return (1 / (1 + Math.exp(-valor)));
    }
 
 
@@ -348,9 +349,33 @@ public class RedeNeural implements Cloneable, Serializable{
 
 
    private double leakyRelu(double valor){
-      if(valor >= 0) return valor;
+      if(valor > 0) return valor;
       else return (0.001) * valor;
    }
+
+
+   public void argmax(){
+      double maiorValor = 0;
+      int i, indiceMaiorSaida = 0;
+
+      for(i = 0; i < this.saida.neuronios.length; i++){
+         if(i == 0){
+            maiorValor = this.saida.neuronios[i].entrada;
+            indiceMaiorSaida = i;
+         
+         }else if(this.saida.neuronios[i].entrada > maiorValor){
+            maiorValor = this.saida.neuronios[i].entrada;
+            indiceMaiorSaida = i;
+         }
+      }
+
+      for(i = 0; i < this.saida.neuronios.length; i++){
+         if(i == indiceMaiorSaida) this.saida.neuronios[i].saida = 1;
+         else this.saida.neuronios[i].saida = 0;
+      }
+
+   }
+
 
 
    /**
