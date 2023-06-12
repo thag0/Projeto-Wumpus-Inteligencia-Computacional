@@ -6,6 +6,7 @@ Tamanho da rede
 Funções de ativação
 	-função de ativação: tangente hiperbolica
 	-função de ativação na saída: relu derivada
+
 BIAS = 1;
 
 Mapa treinado
