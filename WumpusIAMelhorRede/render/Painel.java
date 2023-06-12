@@ -22,8 +22,9 @@ public class Painel extends JPanel{
    int y0 = 40;
    int x = 0;
    int y = 0;
-   int larguraDesenho = 18;
-   int alturaDesenho = 18;
+   int larguraDesenho = 22;
+   int alturaDesenho = 22;
+   int espacoVerticalEntreNeuronio = 7;
 
    //informações
    double mediaPesos = 0;
@@ -47,8 +48,11 @@ public class Painel extends JPanel{
    }
 
 
-   public void desenhar(Agente agente){
+   public void desenhar(Agente agente, double pesos, double melhorFitness, int geracoesStagnadas){
       melhorAgente = agente;
+      mediaPesos = pesos;
+      this.melhorFitness = melhorFitness;
+      this.geracoesStagnadas = geracoesStagnadas;
       repaint();
    }
 
@@ -109,7 +113,7 @@ public class Painel extends JPanel{
          if(contador == 9) g2.drawString("Tem flecha", (x+xTexto), (y+yTexto));
 
          g2.fillOval(x, y, larguraDesenho, alturaDesenho);
-         y += larguraDesenho + 10;
+         y += larguraDesenho + espacoVerticalEntreNeuronio;
       }
    }
 
@@ -122,7 +126,7 @@ public class Painel extends JPanel{
             else g2.setColor(corNeuronioInativo); 
             
             g2.fillOval(x, y, larguraDesenho, alturaDesenho);
-            y += larguraDesenho + 10;   
+            y += larguraDesenho + espacoVerticalEntreNeuronio;   
          }
          x += (larguraDesenho*2);
          y = y0 + alturaDesenho + (altura/2) - (larguraDesenho*melhorAgente.rede.ocultas[0].neuronios.length);
@@ -145,7 +149,7 @@ public class Painel extends JPanel{
          if(contador == 6) g2.drawString("Atirar oeste", (x+40), (y+13));
          if(contador == 7) g2.drawString("Atirar leste", (x+40), (y+13));
          if(contador == 8) g2.drawString("Pegar", (x+40), (y+13));
-         y += larguraDesenho + 10; 
+         y += larguraDesenho + espacoVerticalEntreNeuronio; 
       }
    }
 }

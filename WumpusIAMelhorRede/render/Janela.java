@@ -19,7 +19,7 @@ public class Janela extends JFrame{
    }
 
 
-   public void desenhar(Agente agente){
-      painel.desenhar(agente);
+   public void desenhar(Agente agente, double pesos, double melhorFitness, int geracoesStagnadas){
+      painel.desenhar(agente, pesos, melhorFitness, geracoesStagnadas);
    }
 }

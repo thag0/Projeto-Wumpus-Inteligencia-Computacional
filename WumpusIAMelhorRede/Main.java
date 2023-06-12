@@ -132,7 +132,10 @@ public class Main{
                 calcularSensacoes(agente);
                 imprimirPartida();
                 janela.desenhar(
-                    agente
+                    agente,
+                    0,
+                    0,
+                    0
                 );
             
                 Thread.sleep((long) (1000 * tempoAtualizacao));

@@ -14,27 +14,38 @@ public class RedeNeural implements Cloneable, Serializable{
    public int qtdNeuroniosEntrada;
    public int qtdNeuroniosOcultas;
    public int qtdNeuroniosSaida;
-
    public int qtdCamadasOcultas;
 
+   private double alcancePeso = 100;
    int BIAS = 1;
    double TAXA_APRENDIZAGEM = 0.1;
 
    //padronizar uso das funções de ativação
-   final int ativacaoRelu = 1;
-   final int ativacaoReluDx = 2;
-   final int ativacaoSigmoid = 3;
-   final int ativacaoSigmoidDx = 4;
-   final int ativacaoTanH = 5;
-   final int ativacaoTanHDx = 6;
-   final int ativacaoLeakyRelu = 7;
-   final int ativacaoArgmax = 8;//implementar
+   private final int ativacaoRelu = 1;
+   private final int ativacaoReluDx = 2;
+   private final int ativacaoSigmoid = 3;
+   private final int ativacaoSigmoidDx = 4;
+   private final int ativacaoTanH = 5;
+   private final int ativacaoTanHDx = 6;
+   private final int ativacaoLeakyRelu = 7;
    
-   int funcaoAtivacao = ativacaoTanH;
-   int funcaoAtivacaoSaida = ativacaoReluDx;
+   private int funcaoAtivacao = ativacaoRelu;
+   private int funcaoAtivacaoSaida = ativacaoReluDx;
 
    int i, j, k;//contadores
 
+   /**
+    * <p>Cria uma instância de rede neural artificial. A arquitetura da rede se 
+    * baseia em uma camada de entrada, várias camadas ocultas mas com o mesmo número 
+    * de neurônios cada, e uma camada de saída.</p>
+    * os valores de todos os parâmetros pedidos <strong>NÃO</strong> devem
+    * ser menores que 1.
+    * @author Thiago Barroso
+    * @param qtdNeuroniosEntrada quantidade de neurônios na camada de entrada
+    * @param qtdNeuroniosOcultas quantidade de neurônios das camadas ocultas
+    * @param qtdNeuroniosSaida quantidade de neurônios na camada de saída
+    * @param qtdCamadasOcultas quantidade de camadas ocultas
+    */
    public RedeNeural(int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdCamadasOcultas){
       if(qtdNeuroniosEntrada < 1 || qtdNeuroniosOcultas < 1 || qtdNeuroniosSaida < 1 || qtdCamadasOcultas < 1){
          throw new IllegalArgumentException("Os valores devem ser maiores ou iguais a um.");
@@ -43,19 +54,19 @@ public class RedeNeural implements Cloneable, Serializable{
       this.qtdNeuroniosEntrada = qtdNeuroniosEntrada;
       this.qtdNeuroniosOcultas = qtdNeuroniosOcultas;
       this.qtdNeuroniosSaida = qtdNeuroniosSaida;
-
       this.qtdCamadasOcultas = qtdCamadasOcultas;
 
       criarRede();
    }
 
 
+   //instancia os neuronios e as camadas
    private void criarRede(){
       //inicializar camada de entrada
       entrada = new Camada();
       entrada.neuronios = new Neuronio[qtdNeuroniosEntrada];
       for(int i = 0; i < qtdNeuroniosEntrada; i++){
-         entrada.neuronios[i] = new Neuronio(qtdNeuroniosOcultas);
+         entrada.neuronios[i] = new Neuronio(qtdNeuroniosOcultas, alcancePeso);
       }
 
       //inicializar camadas ocultas
@@ -66,10 +77,10 @@ public class RedeNeural implements Cloneable, Serializable{
       
          for (int j = 0; j < qtdNeuroniosOcultas; j++) {
             if (i == (qtdCamadasOcultas-1)){
-               novaOculta.neuronios[j] = new Neuronio(qtdNeuroniosSaida);
+               novaOculta.neuronios[j] = new Neuronio(qtdNeuroniosSaida, alcancePeso);
             
             }else{
-               novaOculta.neuronios[j] = new Neuronio(qtdNeuroniosOcultas);
+               novaOculta.neuronios[j] = new Neuronio(qtdNeuroniosOcultas, alcancePeso);
             }
          }
          ocultas[i] = novaOculta;
@@ -79,12 +90,15 @@ public class RedeNeural implements Cloneable, Serializable{
       saida = new Camada();
       saida.neuronios = new Neuronio[qtdNeuroniosSaida];
       for(int i = 0; i < qtdNeuroniosSaida; i++){
-         saida.neuronios[i] = new Neuronio(qtdNeuroniosSaida);
+         saida.neuronios[i] = new Neuronio(qtdNeuroniosSaida, alcancePeso);
       }
-
    }
 
 
+   /**
+    * Propaga os dados de entrada pela rede neural pelo método de feedforward.
+    * @param dados dados usados para a camada de entrada
+    */
    public void calcularSaida(double[] dados){
       if(dados.length != this.entrada.neuronios.length){
          throw new IllegalArgumentException("As dimensões dos dados de entrada com os neurônios de entrada da rede não são iguais");
@@ -127,7 +141,6 @@ public class RedeNeural implements Cloneable, Serializable{
             ); 
          }
          this.saida.neuronios[i].entrada = soma;
-         soma += BIAS;
          this.saida.neuronios[i].saida = funcaoAtivacaoSaida(soma);
       }
    }
@@ -166,6 +179,9 @@ public class RedeNeural implements Cloneable, Serializable{
    }
 
 
+   /**
+    * em teste.
+    */
    public void treinar(double[][] dados, double[] saida, int epochs){
       double[] dados_treino = new double[dados[0].length];
       double[] saida_treino = new double[1];
@@ -184,8 +200,12 @@ public class RedeNeural implements Cloneable, Serializable{
    }
 
 
-   //teste
-   //as vezes gera NaN nos erros
+   /**
+    * em teste,
+    * as vezes gera NaN nos erros.
+    * @param dados
+    * @param saidaEsperada
+    */
    public void backpropagation(double[] dados, double[] saidaEsperada){
       if(saidaEsperada.length != this.saida.neuronios.length){
          System.out.println("imcompatibilidade de dimensões");
@@ -249,14 +269,18 @@ public class RedeNeural implements Cloneable, Serializable{
 
 
    /**
-    * 1 - ReLu.
-    * 2 - ReLu derivada.
-    * 3 - Sigmoide.
-    * 4 - Sigmoid derivada.
-    * 5 - Tangente hiperbolica.
-    * 6 - Tangente hiperbolica derivada.
-    * 7 - Leaky ReLu.
-    * Por padrão será usado ReLu e Relu derivada, respectivamente.
+    * Define a função de ativação que a rede usará nos neurônios das camadas ocultas e na camada
+    * de saída, por padrão será usado ReLu e ReLu derivada, respectivamente.
+    * Segue a lista das funções disponíveis:
+    * <ul>
+    *    <li> 1 - ReLu. </li>
+    *    <li> 2 - ReLu derivada. </li>
+    *    <li> 3 - Sigmoide. </li>
+    *    <li> 4 - Sigmoid derivada .</li>
+    *    <li> 5 - Tangente hiperbólica. </li>
+    *    <li> 6 - Tangente hiperbólica derivada. </li>
+    *    <li> 7 - Leaky ReLu. </li>
+    * </ul>
     * @param ocultas função de ativação das camadas ocultas
     * @param saida função de ativação da ultima camada oculta para a saída
     */
@@ -266,6 +290,17 @@ public class RedeNeural implements Cloneable, Serializable{
 
       funcaoAtivacao = ocultas;
       funcaoAtivacaoSaida = saida;
+   }
+
+
+   /**
+    * Configura o valor de alcance dos pesos das ligações de cada neurônio da rede. O valor
+    * padrão de alcance dos pesos é de 100, significa dizer que os pesos gerados podem variar entre -100 e 100.
+    * <p> O valor de alcance <strong>NÃO</strong> deve ser menor ou igual a zero. </p>
+    * @param alcancePeso novo valor de alcance dos pesos
+    */
+   public void configurarAlcancePeso(double alcancePeso){
+      this.alcancePeso = alcancePeso;
    }
 
 
@@ -350,11 +385,13 @@ public class RedeNeural implements Cloneable, Serializable{
 
    private double leakyRelu(double valor){
       if(valor > 0) return valor;
-      else return (0.001) * valor;
+      else return ((0.001) * valor);
    }
 
 
-   public void argmax(){
+   //implementar função de ativação argmax para a saída da rede
+   @SuppressWarnings("unused")
+   private void argmax(){
       double maiorValor = 0;
       int i, indiceMaiorSaida = 0;
 
@@ -379,7 +416,7 @@ public class RedeNeural implements Cloneable, Serializable{
 
 
    /**
-    * Clona a instância da rede
+    * Clona a instância da rede.
     * @return Clone da rede
     */
    @Override
@@ -427,7 +464,7 @@ public class RedeNeural implements Cloneable, Serializable{
 
 
    private Neuronio cloneNeuronio(Neuronio neuronio, int qtdLigacoes, double[] pesos){
-      Neuronio clone = new Neuronio(neuronio.pesos.length);
+      Neuronio clone = new Neuronio(neuronio.pesos.length, this.alcancePeso);
 
       double pesosClone[] = new double[qtdLigacoes];
 
@@ -442,7 +479,10 @@ public class RedeNeural implements Cloneable, Serializable{
    }
 
    /**
-    * Salva a classe da rede num arquivo "rede.dat" no mesmo diretório que contém o código com o main
+    * Salva a classe da rede em um arquivo especificado, o caminho não leva em consideração
+    * o formato, de preferência deve ser .dat, caso seja especificado apenas o nome, o arquivo
+    * será salvo no mesmo diretório que o arquivo principal.
+    * @param caminho caminho de destino do arquivo que será salvo.
     */
    public void salvarRedeArquivo(String caminho){
       try{
@@ -460,8 +500,10 @@ public class RedeNeural implements Cloneable, Serializable{
 
 
    /**
-    * Lê o arquivo "rede.dat" que deve estar no mesmo diretório que o código com o main
-    * @return Rede lida no arquivo
+    * Lê um arquivo de rede neural no caminho especificado, o caminho não leva em consideração
+    * o formato, logo precisa ser especificado.
+    * @param caminho caminho do arquivo de rede salvo
+    * @return Rede lida pelo arquivo.
     */
    public RedeNeural lerRedeArquivo(String caminho){
       RedeNeural rede = null;
