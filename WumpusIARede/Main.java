@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.2f;
+    static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -64,6 +64,7 @@ public class Main{
 		// try{
 		// 	tamanhoMapa = Integer.parseInt(pegarEntrada());
 		// }catch(Exception e){ tamanhoMapa = 4; }
+
         tamanhoMapa = 7;
         criarMapas();
         calcularMapaPosicoes();
@@ -138,7 +139,7 @@ public class Main{
                     }
                 }
 
-                if(treinoGenetico.individuosVivos == 0){
+                if(treinoGenetico.individuosVivos < 1){
                     treinoGenetico.ajustarPouplacao(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
                     for(int j = 0; j < treinoGenetico.tamanhoPopulacao; j++){
                         copiarElementosParaAgente(treinoGenetico.individuos.get(j), wumpus, pocos, ouro);  

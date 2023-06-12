@@ -9,7 +9,6 @@ import rna.RedeNeural;
 public class TreinoGenetico{
    public int tamanhoPopulacao;
    public int individuosVivos = 0;
-   public float TAXA_MUTACAO;
    public ArrayList<Agente> individuos;
    public double mediaPesos = 0;
 
@@ -52,21 +51,17 @@ public class TreinoGenetico{
 
    public void ajustarPouplacao(int tamanhoMapa, int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas, String[][] mapaSensacoes){
       System.out.println("Ajustando população");
-      double fitnessMedio = 0.0;
-      double fitnessTotal = 0.0;
 
-      for(i = 0; i < tamanhoPopulacao; i++){
-         fitnessTotal += this.individuos.get(i).fitness;
-      }
-      fitnessMedio = (double) fitnessTotal / tamanhoPopulacao;
+      double mediaFitness = calcularMediaFitness();
+      double desvioPadraoFitness = calcularDesvioPadraoFitness();
 
-      Agente agente = escolherMelhorIndividuo();
-      RedeNeural melhorRede = agente.rede;
+      Agente melhorAgente = escolherMelhorIndividuo();
+      RedeNeural melhorRede = melhorAgente.rede;
 
       //tratar gerações sem melhora
-      if(agente.fitness == ultimoMelhorFitness) geracoesStagnadas++;
+      if(melhorAgente.fitness == ultimoMelhorFitness) geracoesStagnadas++;
       else{
-         ultimoMelhorFitness = agente.fitness;
+         ultimoMelhorFitness = melhorAgente.fitness;
          geracoesStagnadas = 0;
       }
 
@@ -79,7 +74,7 @@ public class TreinoGenetico{
       for(i = 0; i < tamanhoPopulacao; i++){
          Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
          novoAgente.rede = melhorRede.clone();
-         ajustarPesos(novoAgente.rede, fitnessMedio, aumentarAleatoriedade);
+         ajustarPesos(novoAgente.rede, mediaFitness, desvioPadraoFitness, aumentarAleatoriedade); 
          carregarIndividuo(novoAgente);    
       }
 
@@ -88,13 +83,36 @@ public class TreinoGenetico{
    }
 
 
-   public void ajustarPesos(RedeNeural rede, double fitnessMedio, boolean aumentarAleatoriedade){
+   private double calcularMediaFitness(){
+      double fitnessTotal = 0.0;
+      for(i = 0; i < tamanhoPopulacao; i++){
+         fitnessTotal += this.individuos.get(i).fitness;
+      }
+      return (double) (fitnessTotal / tamanhoPopulacao);
+   }
+
+
+   private double calcularDesvioPadraoFitness(){
+      double mediaFitness = calcularMediaFitness();
+      double somaDiferencasQuadrado = 0.0;
+      
+      for (int i = 0; i < tamanhoPopulacao; i++) {
+         double diferenca = individuos.get(i).fitness - mediaFitness;
+         somaDiferencasQuadrado += Math.pow(diferenca, 2);
+      }
+      
+      double desvioPadrao = Math.sqrt(somaDiferencasQuadrado / tamanhoPopulacao);
+      return desvioPadrao;
+   }
+
+
+   public void ajustarPesos(RedeNeural rede, double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
       //percorrer camada de entrada
       //percorrer neuronios da camada de entrada
       for(int i = 0; i < rede.entrada.neuronios.length; i++){
          //percerrer pesos de cada neuronio da camada de entrada
          for(int j = 0; j < rede.entrada.neuronios[i].pesos.length; j++){
-            rede.entrada.neuronios[i].pesos[j] += novoValorAleatorio(fitnessMedio, aumentarAleatoriedade);
+            rede.entrada.neuronios[i].pesos[j] += novoValorAleatorio(mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
          }
       }
 
@@ -104,15 +122,15 @@ public class TreinoGenetico{
          for(int j = 0; j < rede.ocultas[i].neuronios.length; j++){
             //percorrer pesos de cada neuronio da camada oculta
             for(int k = 0; k < rede.ocultas[i].neuronios[j].pesos.length; k++){
-               rede.ocultas[i].neuronios[j].pesos[k] += novoValorAleatorio(fitnessMedio, aumentarAleatoriedade);
+               rede.ocultas[i].neuronios[j].pesos[k] += novoValorAleatorio(mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
             }
          }
       }
    }
 
 
-   private double novoValorAleatorio(double fitnessMedio, boolean aumentarAleatoriedade){
-      double valor = random.nextGaussian() * (Math.abs(fitnessMedio) / 2.0);
+   private double novoValorAleatorio(double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
+      double valor = random.nextGaussian() * (Math.abs(mediaFitness) / 2.0);
       valor /= 100;
 
       if(aumentarAleatoriedade) valor += random.nextDouble(-100, 100);
