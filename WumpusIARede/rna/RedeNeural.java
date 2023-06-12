@@ -141,7 +141,6 @@ public class RedeNeural implements Cloneable, Serializable{
             ); 
          }
          this.saida.neuronios[i].entrada = soma;
-         soma += BIAS;
          this.saida.neuronios[i].saida = funcaoAtivacaoSaida(soma);
       }
    }

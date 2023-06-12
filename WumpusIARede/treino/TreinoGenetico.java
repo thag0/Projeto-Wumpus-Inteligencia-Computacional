@@ -66,11 +66,14 @@ public class TreinoGenetico{
          geracoesStagnadas = 0;
       }
 
-      if(geracoesStagnadas > 10){//randomizar mais os pesos
+      //randomizar mais os pesos
+      // evitar que as gerações fiquem muito tempo sem melhorar
+      if(geracoesStagnadas > 15){
          aumentarAleatoriedade = true;
          geracoesStagnadas = 0;
       }
 
+      //gerar novos individuos
       individuos.clear();
       for(i = 0; i < tamanhoPopulacao; i++){
          Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
@@ -108,21 +111,23 @@ public class TreinoGenetico{
 
 
    public void ajustarPesos(RedeNeural rede, double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
+      int i, j, k;//contadores locais
+
       //percorrer camada de entrada
       //percorrer neuronios da camada de entrada
-      for(int i = 0; i < rede.entrada.neuronios.length; i++){
+      for(i = 0; i < rede.entrada.neuronios.length; i++){
          //percerrer pesos de cada neuronio da camada de entrada
-         for(int j = 0; j < rede.entrada.neuronios[i].pesos.length; j++){
+         for(j = 0; j < rede.entrada.neuronios[i].pesos.length; j++){
             rede.entrada.neuronios[i].pesos[j] += novoValorAleatorio(mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
          }
       }
 
       //percorrer camadas ocultas
-      for(int i = 0; i < rede.ocultas.length; i++){
+      for(i = 0; i < rede.ocultas.length; i++){
          //percorrer neuronios da camada oculta
-         for(int j = 0; j < rede.ocultas[i].neuronios.length; j++){
+         for(j = 0; j < rede.ocultas[i].neuronios.length; j++){
             //percorrer pesos de cada neuronio da camada oculta
-            for(int k = 0; k < rede.ocultas[i].neuronios[j].pesos.length; k++){
+            for(k = 0; k < rede.ocultas[i].neuronios[j].pesos.length; k++){
                rede.ocultas[i].neuronios[j].pesos[k] += novoValorAleatorio(mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
             }
          }
