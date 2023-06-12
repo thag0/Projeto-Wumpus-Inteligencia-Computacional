@@ -44,6 +44,7 @@ public class TreinoGenetico{
 
 
    public void carregarIndividuo(Agente individuo){
+      individuo.rede.configurarFuncaoAtivacao(5, 2);
       individuos.add(individuo);
       individuosVivos++;
    }

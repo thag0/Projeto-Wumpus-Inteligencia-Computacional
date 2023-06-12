@@ -14,24 +14,22 @@ public class RedeNeural implements Cloneable, Serializable{
    public int qtdNeuroniosEntrada;
    public int qtdNeuroniosOcultas;
    public int qtdNeuroniosSaida;
-
    public int qtdCamadasOcultas;
 
    int BIAS = 1;
    double TAXA_APRENDIZAGEM = 0.1;
 
    //padronizar uso das funções de ativação
-   final int ativacaoRelu = 1;
-   final int ativacaoReluDx = 2;
-   final int ativacaoSigmoid = 3;
-   final int ativacaoSigmoidDx = 4;
-   final int ativacaoTanH = 5;
-   final int ativacaoTanHDx = 6;
-   final int ativacaoLeakyRelu = 7;
-   final int ativacaoArgmax = 8;//implementar
+   private final int ativacaoRelu = 1;
+   private final int ativacaoReluDx = 2;
+   private final int ativacaoSigmoid = 3;
+   private final int ativacaoSigmoidDx = 4;
+   private final int ativacaoTanH = 5;
+   private final int ativacaoTanHDx = 6;
+   private final int ativacaoLeakyRelu = 7;
    
-   int funcaoAtivacao = ativacaoTanH;
-   int funcaoAtivacaoSaida = ativacaoReluDx;
+   private int funcaoAtivacao = ativacaoRelu;
+   private int funcaoAtivacaoSaida = ativacaoReluDx;
 
    int i, j, k;//contadores
 
