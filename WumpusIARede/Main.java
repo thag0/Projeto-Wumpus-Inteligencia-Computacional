@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.1f;
+    static double tempoAtualizacao = 0.2f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
