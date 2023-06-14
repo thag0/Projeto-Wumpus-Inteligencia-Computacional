@@ -15,6 +15,7 @@ O algoritmo de treino apenas replica o melhor agente de cada geração e faz alg
 - Os indivíduos da nova geração irão receber a rede neural do último melhor agente, mas com pequenas modificações aleatórias com o objetivo de gerar um agente ainda melhor;
 - Repetimos o processo até conseguir um agente que ganhe o jogo.
 
+
 Alguns dados mais técnicos da melhor configuração que conseguimos até agora foram:
 - Dez neurônios na camada de entrada para os dados do ambiente e do agente;
 - Quatro camadas ocultas com 12 neurônios cada;
