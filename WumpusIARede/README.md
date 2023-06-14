@@ -12,3 +12,5 @@ pegou o ouro, matou o wumpus e se ainda tem flecha.
 - Clonamos a rede neural do melhor agente para ela ser usada na próxima geração
 - Os indivíduos da nova geração irão receber a rede neural do último melhor agente, mas com pequenas modificações aleatórias com o objetivo de gerar um agente ainda melhor
 - Repetimos o processo até conseguir um agente que ganhe o jogo
+
+![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/2d6cc61d-72aa-43d0-8642-588230ce6e2c)
