@@ -24,4 +24,4 @@ Alguns dados mais técnicos da melhor configuração que conseguimos até agora 
 - Função de ativação na camada de saída foi a ReLU(rectified linear unit) na forma derivada;
 - O valor dos pesos aleatórios da primeira geração de redes varia entre -100 e 100;
 
-![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/2d6cc61d-72aa-43d0-8642-588230ce6e2c)
+![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/0d60eba6-5421-4379-99ca-d302e2a811e1)
