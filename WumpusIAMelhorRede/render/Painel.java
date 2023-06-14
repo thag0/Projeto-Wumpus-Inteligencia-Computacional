@@ -10,33 +10,36 @@ import javax.swing.JPanel;
 import entidade.Agente;
 
 public class Painel extends JPanel{
-   final int largura = 620;
-   final int altura = 540;
+   final int largura = 600;
+   final int altura = 430;
    public Agente melhorAgente;
    Graphics2D g2;
 
    //desenho
    int contador = 0;
    int contador2 = 0;
-   int x0 = 110;
-   int y0 = 40;
+   int x0 = 120;
+   int y0 = 30;
    int x = 0;
    int y = 0;
+   int yCamadaEntrada = 0;
+   int yCamadaOculta = 0;
+   int yCamadaSaida = 0;
    int larguraDesenho = 22;
-   int alturaDesenho = 22;
-   int espacoVerticalEntreNeuronio = 7;
+   int alturaDesenho = larguraDesenho;
+   int espacoVerticalEntreNeuronio = 8;
 
    //informações
    double mediaPesos = 0;
    double melhorFitness = 0;
+   double mediaFitness = 0;
    int geracoesStagnadas = 0;
 
-   int r = 100;
-   int g = 150;
-   int b = 200;
-   int alpha = 255;
-   Color corNeuronioAtivo = new Color(r, g, b, alpha);
-   Color corNeuronioInativo = new Color(50, 50, 50, alpha);
+   int r = 150;
+   int g = 110;
+   int b = 190;
+   Color corNeuronioAtivo = new Color(r, g, b);
+   Color corNeuronioInativo = new Color((int)(r * 0.25), (int)(g * 0.25), (int)(b * 0.25));
 
    public Painel(){
       setBackground(Color.BLACK);
@@ -48,56 +51,61 @@ public class Painel extends JPanel{
    }
 
 
-   public void desenhar(Agente agente, double pesos, double melhorFitness, int geracoesStagnadas){
+   public void desenhar(Agente agente, double melhorFitness, int geracoesStagnadas, double mediaFitness){
       melhorAgente = agente;
-      mediaPesos = pesos;
       this.melhorFitness = melhorFitness;
       this.geracoesStagnadas = geracoesStagnadas;
+      this.mediaFitness = mediaFitness;
       repaint();
    }
 
+   
    @Override
    protected void paintComponent(Graphics g){
       super.paintComponent(g);
       g2 = (Graphics2D) g;
 
+      //centralizar o desenho dos neuronios com base na altura da tela, no tamanho dos neuronio das camadas desenhadas
+      //incluir o espaçamento estre os neurinios no calculo
+      yCamadaEntrada = y0 + (altura/2) - (larguraDesenho * (melhorAgente.rede.entrada.neuronios.length+1)) + (espacoVerticalEntreNeuronio * (melhorAgente.rede.entrada.neuronios.length-1));
+      yCamadaOculta = y0 + (altura/2) - (larguraDesenho * (melhorAgente.rede.ocultas[0].neuronios.length+1)) + (espacoVerticalEntreNeuronio * (melhorAgente.rede.ocultas[0].neuronios.length-1));
+      yCamadaSaida = y0 + (altura/2) - (larguraDesenho * (melhorAgente.rede.saida.neuronios.length+1)) + (espacoVerticalEntreNeuronio * (melhorAgente.rede.saida.neuronios.length-1));
+
+      //desenhar informações
       g2.setColor(corNeuronioAtivo);
-      g2.drawString(("novo peso médio:  " + (float)(mediaPesos)), 10, 15);
-
-      x = x0;
-      y = y0 + alturaDesenho + (altura/2) - (larguraDesenho*melhorAgente.rede.entrada.neuronios.length);
-      desenharCamadaEntrada(g2);
-      
-
-      x += (larguraDesenho*2);
-      y = y0 + (alturaDesenho) + (altura/2) - (larguraDesenho * melhorAgente.rede.ocultas[0].neuronios.length);
-      desenharOcultas(g2);
-
-      x = x0 + ((larguraDesenho * 2 * melhorAgente.rede.qtdCamadasOcultas)) + (larguraDesenho * 2);
-      y = y0 + alturaDesenho + (altura/2) - (larguraDesenho*melhorAgente.rede.saida.neuronios.length);
-      desenharSaida(g2);
-
-      g2.setColor(corNeuronioAtivo);
-      x = x0 + 190;
-      y = 15;
+      g2.setFont(getFont().deriveFont(14f));
+      x = 10;
+      y = 20;
       g2.drawString(("Gerações stagnadas: " + this.geracoesStagnadas), x, y);
 
-      x += 150;
+      x += 170;
       g2.drawString(("Último melhor fitness: " + (int)(this.melhorFitness)), x, y);
+
+      x += 180;
+      g2.drawString(("Última média fitness: " + (int)(this.mediaFitness)), x, y);
+      
+      //desenhar camadas
+      desenharCamadaEntrada(g2);    
+      desenharOcultas(g2);
+      desenharSaida(g2);
 
       g2.dispose();
    }
 
 
    private void desenharCamadaEntrada(Graphics2D g2){
+      x = x0;
+      y = yCamadaEntrada;
+      
       for(contador = 0; contador < melhorAgente.rede.entrada.neuronios.length; contador++){
          
          if(melhorAgente.rede.entrada.neuronios[contador].saida > 0) g2.setColor(corNeuronioAtivo);
          else g2.setColor(corNeuronioInativo);
          
          //direções
-         int xTexto = -90;
+         int xTexto = -110;
          int yTexto = 14;
+         //posições disponíveis
          if(contador == 0) g2.drawString("Norte", (x+xTexto), (y+yTexto));
          if(contador == 1) g2.drawString("Sul", (x+xTexto), (y+yTexto));
          if(contador == 2) g2.drawString("Oeste", (x+xTexto), (y+yTexto));
@@ -119,6 +127,9 @@ public class Painel extends JPanel{
 
 
    private void desenharOcultas(Graphics2D g2){
+      x += (larguraDesenho*2);
+      y = yCamadaOculta;
+
       for(contador = 0; contador < melhorAgente.rede.ocultas.length; contador++){
          for(contador2 = 0; contador2 < melhorAgente.rede.ocultas[contador].neuronios.length; contador2++){
 
@@ -129,12 +140,15 @@ public class Painel extends JPanel{
             y += larguraDesenho + espacoVerticalEntreNeuronio;   
          }
          x += (larguraDesenho*2);
-         y = y0 + alturaDesenho + (altura/2) - (larguraDesenho*melhorAgente.rede.ocultas[0].neuronios.length);
+         y = yCamadaOculta;
       }
    }
 
 
    private void desenharSaida(Graphics2D g2){
+      x = x0 + ((larguraDesenho * 2 * melhorAgente.rede.qtdCamadasOcultas)) + (larguraDesenho * 2);
+      y = yCamadaSaida;
+      
       for(contador = 0; contador < melhorAgente.rede.saida.neuronios.length; contador++){
          if(melhorAgente.rede.saida.neuronios[contador].saida > 0) g2.setColor(corNeuronioAtivo);
          else g2.setColor(corNeuronioInativo);
