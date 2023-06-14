@@ -11,6 +11,7 @@ public class TreinoGenetico{
    public int individuosVivos = 0;
    public ArrayList<Agente> individuos;
    public double mediaPesos = 0;
+   public double mediaFitness = 0.0;
 
    public int geracaoAtual = 0;
 
@@ -53,7 +54,7 @@ public class TreinoGenetico{
    public void ajustarPouplacao(int tamanhoMapa, int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas, String[][] mapaSensacoes){
       System.out.println("Ajustando população");
 
-      double mediaFitness = calcularMediaFitness();
+      mediaFitness = calcularMediaFitness();
       double desvioPadraoFitness = calcularDesvioPadraoFitness();
 
       Agente melhorAgente = escolherMelhorIndividuo();
@@ -89,7 +90,7 @@ public class TreinoGenetico{
 
    private double calcularMediaFitness(){
       double fitnessTotal = 0.0;
-      for(i = 0; i < tamanhoPopulacao; i++){
+      for(int i = 0; i < tamanhoPopulacao; i++){
          fitnessTotal += this.individuos.get(i).fitness;
       }
       return (double) (fitnessTotal / tamanhoPopulacao);
@@ -136,7 +137,7 @@ public class TreinoGenetico{
 
 
    private double novoValorAleatorio(double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
-      double valor = random.nextGaussian() * (Math.abs(mediaFitness) / 2.0);
+      double valor = random.nextGaussian() * (Math.abs(mediaFitness) / 2);
       valor /= 100;
 
       if(aumentarAleatoriedade) valor += random.nextDouble(-100, 100);

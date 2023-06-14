@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.2f;
+    static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -49,10 +49,10 @@ public class Main{
     static final int TAMANHO_POPULACAO = 5000;
     
     //dados da rede
-    static final int neuroniosEntrada = 10;
-    static final int neuroniosOcultas = 12;
-    static final int neuroniosSaida = 9;
-    static final int quantidadeOcultas = 4;
+    static final int neuroniosEntrada = 10;//10
+    static final int neuroniosOcultas = 12;//12
+    static final int neuroniosSaida = 9;//9
+    static final int quantidadeOcultas = 4;//4
 
     //informações
     static Janela janela;
@@ -153,9 +153,9 @@ public class Main{
                     imprimirPartida(treinoGenetico);
                     janela.desenhar(
                         melhorAgente,
-                        treinoGenetico.mediaPesos,
                         treinoGenetico.ultimoMelhorFitness,
-                        treinoGenetico.geracoesStagnadas
+                        treinoGenetico.geracoesStagnadas,
+                        treinoGenetico.mediaFitness
                     );
     
                     Thread.sleep((long) (1000 * tempoAtualizacao));
@@ -181,6 +181,7 @@ public class Main{
         System.out.println("Geração atual: " + treinoGenetico.geracaoAtual);
         System.out.println("Individuos vivos: " + treinoGenetico.individuosVivos + "/" + treinoGenetico.tamanhoPopulacao);
         System.out.println("Redes que ganharam: " + redesQueGanharam);
+
         System.out.println("\nMelhor individuo vivo");
         System.out.println("Fitness: " + melhorAgente.fitness);
         System.out.println("Ouro coletado: " + melhorAgente.getOuroColetado());

@@ -9,7 +9,7 @@ public class Janela extends JFrame{
    public Painel painel = new Painel();
 
    public Janela(){
-      setTitle("Melhor rede");
+      setTitle("Informações do treino");
       add(painel);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
@@ -19,7 +19,7 @@ public class Janela extends JFrame{
    }
 
 
-   public void desenhar(Agente agente, double pesos, double melhorFitness, int geracoesStagnadas){
-      painel.desenhar(agente, pesos, melhorFitness, geracoesStagnadas);
+   public void desenhar(Agente agente, double melhorFitness, int geracoesStagnadas, double mediaFitness){
+      painel.desenhar(agente, melhorFitness, geracoesStagnadas, mediaFitness);
    }
 }
