@@ -1,6 +1,6 @@
 # Código fonte da implementação com rede neural no projeto
 
-Repositório dedicado ao código fonte do projeto que roda apenas a melhor rede para um único agente.
+Repositório dedicado ao código fonte do projeto que executa apenas a melhor rede para um único agente.
 
 **lembrando que nada muda nesse programa**, o comportamento do agente continua sendo dependente da rede neural 
 dele, então não programamos de fato um caminho que ele vai seguir, aqui temos várias redes que conseguiram ganhar o 
