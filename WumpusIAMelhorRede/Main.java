@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.2f;
+    static double tempoAtualizacao = 0.3f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -55,7 +55,8 @@ public class Main{
 
     //informações
     static Janela janela;
-    static String nomeArquivoRede = "./melhores-redes/rede-fit-6790.dat";
+    static String nomeArquivoRede = "./melhores-redes/rede-fit-6682.dat";//da a volta no wumpus
+
     public static void main(String[] args){
 		limparConsole();
 
@@ -132,6 +133,7 @@ public class Main{
                 imprimirPartida();
                 janela.desenhar(
                     agente,
+                    0,
                     0,
                     0,
                     0
