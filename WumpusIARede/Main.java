@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.08f;
+    static double tempoAtualizacao = 0.05f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -46,7 +46,7 @@ public class Main{
     static String[] posicoesMapa = {"x", ".", "+"};
 
     //dados pro treino
-    static final int TAMANHO_POPULACAO = 5_000;
+    static final int TAMANHO_POPULACAO = 6_000;
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
@@ -113,16 +113,15 @@ public class Main{
         try{
             while(rodadaAtual < rodadas){
 
-                for(i = 0; i < treinoGenetico.tamanhoPopulacao; i++){
-                    if(treinoGenetico.individuosVivos < 1) break;
+                for(i = 0; i < treinoGenetico.tamanhoPopulacao; i++){//calcular uma ação de cada individuo
 
-                    if(treinoGenetico.individuos.get(i).vivo){//calcular uma ação de cada individuo
+                    if(treinoGenetico.individuos.get(i).vivo){
 
                         calcularMapaSensacoesAgente(treinoGenetico.individuos.get(i));
                         calcularSensacoes(treinoGenetico.individuos.get(i));
                         atualizarDados(treinoGenetico.individuos.get(i), dadosAmbiente);
                         
-                        individuoMorreu = treinoGenetico.individuos.get(i).calcularAcao(dadosAmbiente, tamanhoMapa);
+                        individuoMorreu = treinoGenetico.individuos.get(i).calcularAcao(dadosAmbiente);
                         if(!individuoMorreu){
                             individuoMorreu = verificarColisao(treinoGenetico.individuos.get(i), treinoGenetico);
                         }
@@ -137,9 +136,11 @@ public class Main{
                             individuoMorreu = false;
                         }
                     }
+
+                    if(treinoGenetico.individuosVivos < 1) break;
                 }
 
-                if(treinoGenetico.individuosVivos < 1){
+                if(treinoGenetico.individuosVivos < 1){//proxima
                     treinoGenetico.ajustarPouplacao(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
                     for(int j = 0; j < treinoGenetico.tamanhoPopulacao; j++){
                         copiarElementosParaAgente(treinoGenetico.individuos.get(j), wumpus, pocos, ouro);  

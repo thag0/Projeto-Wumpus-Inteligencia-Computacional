@@ -56,6 +56,7 @@ public class TreinoGenetico{
       mediaFitness = calcularMediaFitness();
       desvioPadraoFitness = calcularDesvioPadraoFitness();
 
+      //pegando o melhor agente da geração
       Agente melhorAgente = escolherMelhorIndividuo();
       RedeNeural melhorRede = melhorAgente.rede;
 
