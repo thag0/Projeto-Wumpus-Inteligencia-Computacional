@@ -7,7 +7,7 @@ Funções de ativação
 	-função de ativação: tangente hiperbolica
 	-função de ativação na saída: relu derivada
 
-BIAS = 1;
+BIAS = 0;
 
 Mapa treinado
 	-wumpus.clear();

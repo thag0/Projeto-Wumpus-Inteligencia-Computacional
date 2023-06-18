@@ -10,8 +10,8 @@ public class TreinoGenetico{
    public int tamanhoPopulacao;
    public int individuosVivos = 0;
    public ArrayList<Agente> individuos;
-   public double mediaPesos = 0;
    public double mediaFitness = 0.0;
+   public double desvioPadraoFitness = 0.0;
 
    public int geracaoAtual = 0;
 
@@ -45,7 +45,6 @@ public class TreinoGenetico{
 
 
    public void carregarIndividuo(Agente individuo){
-      individuo.rede.configurarFuncaoAtivacao(5, 2);
       individuos.add(individuo);
       individuosVivos++;
    }
@@ -55,7 +54,7 @@ public class TreinoGenetico{
       System.out.println("Ajustando população");
 
       mediaFitness = calcularMediaFitness();
-      double desvioPadraoFitness = calcularDesvioPadraoFitness();
+      desvioPadraoFitness = calcularDesvioPadraoFitness();
 
       Agente melhorAgente = escolherMelhorIndividuo();
       RedeNeural melhorRede = melhorAgente.rede;
@@ -68,7 +67,7 @@ public class TreinoGenetico{
       }
 
       //randomizar mais os pesos
-      // evitar que as gerações fiquem muito tempo sem melhorar
+      //evitar que as gerações fiquem muito tempo sem melhorar
       if(geracoesStagnadas > 15){
          aumentarAleatoriedade = true;
          geracoesStagnadas = 0;
@@ -79,12 +78,23 @@ public class TreinoGenetico{
       for(i = 0; i < tamanhoPopulacao; i++){
          Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
          novoAgente.rede = melhorRede.clone();
-         ajustarPesos(novoAgente.rede, mediaFitness, desvioPadraoFitness, aumentarAleatoriedade); 
+         ajustarPesos(novoAgente.rede, mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
          carregarIndividuo(novoAgente);    
       }
 
       aumentarAleatoriedade = false;
       geracaoAtual++;
+   }
+
+
+   @SuppressWarnings("unused")
+   private void crossover(){
+      Agente primeiroIndividuo = escolherMelhorIndividuo();
+      Agente segundoIndividuo = escolherSegundoMelhorIndividuo();
+      Agente filho = null;
+
+      System.out.println(primeiroIndividuo.fitness);
+      System.out.println(segundoIndividuo.fitness);
    }
 
 
@@ -142,16 +152,15 @@ public class TreinoGenetico{
 
       if(aumentarAleatoriedade) valor += random.nextDouble(-100, 100);
 
-      mediaPesos = valor;//feedback na tela da rede
       return valor;
    }
 
 
    public Agente escolherMelhorIndividuo(){
-      int melhorValor = 0;
+      int melhorValor = this.individuos.get(0).fitness;
       int indice = 0;
    
-      for (i = 0; i < individuos.size(); i++){
+      for (i = 0; i < tamanhoPopulacao; i++){
          if(i == 0){
             melhorValor = individuos.get(i).fitness;
             indice = i;
@@ -162,6 +171,35 @@ public class TreinoGenetico{
          }
       }
       return individuos.get(indice);
+   }
+
+
+   public Agente escolherSegundoMelhorIndividuo(){
+      int melhorFitness = 0;
+      int segundoMelhorFitness = 0;
+      int indiceSegundoMelhor = 0;
+
+      //procurar melhor individuo
+      for(int i = 0; i < tamanhoPopulacao; i++){
+         if(i == 0){
+            melhorFitness = this.individuos.get(i).fitness;
+         
+         }else if(this.individuos.get(i).fitness > melhorFitness){
+            melhorFitness = this.individuos.get(i).fitness;
+         }
+      }
+
+      //procurar segundo melhor
+      int fitness = 0;
+      for(int i = 0; i < tamanhoPopulacao; i++){
+         fitness = this.individuos.get(i).fitness;
+         if((fitness < melhorFitness) && (fitness > segundoMelhorFitness)){
+            indiceSegundoMelhor = i;
+            segundoMelhorFitness = fitness;
+         }
+      }
+   
+      return this.individuos.get(indiceSegundoMelhor);
    }
 
 

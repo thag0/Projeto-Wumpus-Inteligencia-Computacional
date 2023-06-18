@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.1f;
+    static double tempoAtualizacao = 0.08f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -46,7 +46,7 @@ public class Main{
     static String[] posicoesMapa = {"x", ".", "+"};
 
     //dados pro treino
-    static final int TAMANHO_POPULACAO = 5000;
+    static final int TAMANHO_POPULACAO = 5_000;
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
@@ -155,7 +155,8 @@ public class Main{
                         melhorAgente,
                         treinoGenetico.ultimoMelhorFitness,
                         treinoGenetico.geracoesStagnadas,
-                        treinoGenetico.mediaFitness
+                        treinoGenetico.mediaFitness,
+                        redesQueGanharam
                     );
     
                     Thread.sleep((long) (1000 * tempoAtualizacao));
@@ -187,7 +188,7 @@ public class Main{
         System.out.println("Ouro coletado: " + melhorAgente.getOuroColetado());
         System.out.println("Matou Wumpus: " + melhorAgente.getMatouWumpus());
 
-        mostrarMapa(treinoGenetico);
+        mostrarMapa();
         System.out.println("x: " + melhorAgente.getX() + " y: " + melhorAgente.getY());
         System.out.println("Sentindo: {" + melhorAgente.getSensacoes() + "  }");
 
@@ -321,7 +322,7 @@ public class Main{
 
 
     //impressão
-    public static void mostrarMapa(TreinoGenetico treinoGenetico){
+    public static void mostrarMapa(){
         System.out.println("\nMapa da partida (tamanho " + tamanhoMapa +")");
 
         String conteudo;
@@ -601,7 +602,7 @@ public class Main{
             if((agente.getX() == xInicialAgente) && (agente.getY() == yInicialAgente)){
                 agente.fitness += 4000;
                 System.out.println("Agente[" + indiceAgente + "] ganhou a partida");
-                Thread.sleep((long)(1000 * 0.02));
+                Thread.sleep((long)(1000 * 0.01));
                 agente.rede.salvarRedeArquivo("./melhores-redes/rede-fit-" + agente.fitness + ".dat");
                 redesQueGanharam++;
                 return true;
@@ -611,7 +612,9 @@ public class Main{
     }
 
 
-    //dados de entrada pra rede
+    /**
+     * Atualiza os dados do ambiente para o cálculo da rede neural do agente
+     */
     public static double[] atualizarDados(Agente agente, double[] dados){
         //calcular cada casa adjascente
         //calcular se as casas estão disponíveis pra andar
@@ -663,7 +666,13 @@ public class Main{
     }
 
 
-    //copia do mapa pra cada agente
+    /**
+     * Copia dos elementos do mapa para o agente
+     * @param agente
+     * @param wumpus
+     * @param pocos
+     * @param ouro
+     */
     public static void copiarElementosParaAgente(Agente agente, ArrayList<Wumpus> wumpus, ArrayList<Poco> pocos, Ouro ouro){
         //adicionar poços
         int i = 0;

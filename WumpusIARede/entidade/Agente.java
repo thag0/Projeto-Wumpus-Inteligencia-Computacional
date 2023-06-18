@@ -60,6 +60,8 @@ public class Agente extends Entidade{
         this.vivo = true;
 
         rede = new RedeNeural(nEntrada, nOcultas, nSaida, qtdOcultas);
+        this.rede.configurarFuncaoAtivacao(5, 2);
+        this.rede.compilar();
 
         this.mapaAndado = new int[tamanhoMapa][tamanhoMapa];
         for(int i = 0; i < tamanhoMapa; i++){
@@ -107,12 +109,13 @@ public class Agente extends Entidade{
         this.rede.calcularSaida(dadosAmbiente);
 
         movimentoAceito = false;
-        flechaAcertada = 0;
+        flechaAcertada = 0;//valor fora dos retornos da função atirar
         pegouOuro = false;
 
-        //cada saída da rede representa uma ação
-        //execução tem ordem de prioridade
-        //executa o primeiro neuronio ativo começando do n0
+        /* cada saída da rede representa uma ação
+         * execução tem ordem de prioridade
+         * executa o primeiro neuronio ativo começando do n0 
+         */
         //mover
         if(this.rede.saida.neuronios[0].saida > 0){
             movimentoAceito = validarAcao((this.getX()-1), this.getY(), tamanhoMapa, "norte");
@@ -148,8 +151,8 @@ public class Agente extends Entidade{
             pegouOuro = pegarOuro(ouroMapa);
         }
 
-        //calcular pontuação
 
+        //calcular pontuação
         if(movimentoAceito) this.fitness += (30 - (mapaAndado[posX][posY]*2));
         else{
             this.batidasParede++;
@@ -157,7 +160,7 @@ public class Agente extends Entidade{
         }
 
         if(flechaAcertada == 1) this.fitness += 1500;//atirou e matou
-        if(flechaAcertada == 0) this.fitness -= 50;// atirou sem ter flecha
+        else if(flechaAcertada == 0) this.fitness -= 50;// atirou sem ter flecha
         else if(flechaAcertada == -1) this.fitness -= 10;//atirou mas errou
         else if(flechaAcertada == -2) this.fitness -= 150;// atirou na parede
 
@@ -212,11 +215,11 @@ public class Agente extends Entidade{
     /**
      * @param monstro
      * @param tamanhoMapa
-     * @return -2 atirou na parede, -1 atirou mas errou, 0 não tem flecha, 1 atirou e matou
+     * @return -3 atirou na parede, -2 atirou mas errou, -1 não tem flecha, 1 atirou e matou
      * @throws InterruptedException
      */
     public int atirar(ArrayList<Wumpus> wumpus, int tamanhoMapa, String direcao){
-        if(this.flechas < 1) return 0;
+        if(this.flechas < 1) return -1;//sem flecha
 
         int x, y;
         boolean acaoValidada = false;
@@ -232,7 +235,7 @@ public class Agente extends Entidade{
         }
 
         acaoValidada = validarAcao(x, y, tamanhoMapa, direcao);
-        if(!acaoValidada) return -2;//atirou nas paredes
+        if(!acaoValidada) return -3;//atirou nas paredes
 
 
         this.flechas --;
@@ -246,7 +249,7 @@ public class Agente extends Entidade{
             }
         }
 
-        return -1;//atirou errado
+        return -2;//atirou errado
     }
 
 

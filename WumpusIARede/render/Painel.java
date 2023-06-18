@@ -10,8 +10,8 @@ import javax.swing.JPanel;
 import entidade.Agente;
 
 public class Painel extends JPanel{
-   final int largura = 600;
-   final int altura = 430;
+   final int largura = 620;
+   final int altura = 440;
    public Agente melhorAgente;
    Graphics2D g2;
 
@@ -19,7 +19,7 @@ public class Painel extends JPanel{
    int contador = 0;
    int contador2 = 0;
    int x0 = 120;
-   int y0 = 30;
+   int y0 = 40;
    int x = 0;
    int y = 0;
    int yCamadaEntrada = 0;
@@ -28,18 +28,20 @@ public class Painel extends JPanel{
    int larguraDesenho = 22;
    int alturaDesenho = larguraDesenho;
    int espacoVerticalEntreNeuronio = 8;
+   int espacoHorizontalEntreCamadas = (larguraDesenho * 2);
 
    //informações
    double mediaPesos = 0;
    double melhorFitness = 0;
    double mediaFitness = 0;
    int geracoesStagnadas = 0;
+   long redesQueGanharam = 0;
 
    int r = 150;
    int g = 110;
    int b = 190;
    Color corNeuronioAtivo = new Color(r, g, b);
-   Color corNeuronioInativo = new Color((int)(r * 0.25), (int)(g * 0.25), (int)(b * 0.25));
+   Color corNeuronioInativo = new Color((int)(r * 0.3), (int)(g * 0.3), (int)(b * 0.3));
 
    public Painel(){
       setBackground(Color.BLACK);
@@ -51,11 +53,12 @@ public class Painel extends JPanel{
    }
 
 
-   public void desenhar(Agente agente, double melhorFitness, int geracoesStagnadas, double mediaFitness){
+   public void desenhar(Agente agente, double melhorFitness, int geracoesStagnadas, double mediaFitness, long redesQueGanharam){
       melhorAgente = agente;
       this.melhorFitness = melhorFitness;
       this.geracoesStagnadas = geracoesStagnadas;
       this.mediaFitness = mediaFitness;
+      this.redesQueGanharam = redesQueGanharam;
       repaint();
    }
 
@@ -65,7 +68,7 @@ public class Painel extends JPanel{
       super.paintComponent(g);
       g2 = (Graphics2D) g;
 
-      //centralizar o desenho dos neuronios com base na altura da tela, no tamanho dos neuronio das camadas desenhadas
+      //centralizar o desenho dos neuronios com base na altura da tela, no tamanho dos neuronios das camadas desenhadas
       //incluir o espaçamento estre os neurinios no calculo
       yCamadaEntrada = y0 + (altura/2) - (larguraDesenho * (melhorAgente.rede.entrada.neuronios.length+1)) + (espacoVerticalEntreNeuronio * (melhorAgente.rede.entrada.neuronios.length-1));
       yCamadaOculta = y0 + (altura/2) - (larguraDesenho * (melhorAgente.rede.ocultas[0].neuronios.length+1)) + (espacoVerticalEntreNeuronio * (melhorAgente.rede.ocultas[0].neuronios.length-1));
@@ -78,12 +81,16 @@ public class Painel extends JPanel{
       y = 20;
       g2.drawString(("Gerações stagnadas: " + this.geracoesStagnadas), x, y);
 
-      x += 170;
+      x += 180;
       g2.drawString(("Último melhor fitness: " + (int)(this.melhorFitness)), x, y);
 
-      x += 180;
+      x += 190;
       g2.drawString(("Última média fitness: " + (int)(this.mediaFitness)), x, y);
-      
+
+      x = 10;
+      y = 40;
+      g2.drawString(("Redes que ganharam: " + redesQueGanharam), x, y);
+
       //desenhar camadas
       desenharCamadaEntrada(g2);    
       desenharOcultas(g2);
@@ -107,18 +114,19 @@ public class Painel extends JPanel{
          int yTexto = 14;
          //posições disponíveis
          if(contador == 0) g2.drawString("Norte", (x+xTexto), (y+yTexto));
-         if(contador == 1) g2.drawString("Sul", (x+xTexto), (y+yTexto));
-         if(contador == 2) g2.drawString("Oeste", (x+xTexto), (y+yTexto));
-         if(contador == 3) g2.drawString("Leste", (x+xTexto), (y+yTexto));
+         else if(contador == 1) g2.drawString("Sul", (x+xTexto), (y+yTexto));
+         else if(contador == 2) g2.drawString("Oeste", (x+xTexto), (y+yTexto));
+         else if(contador == 3) g2.drawString("Leste", (x+xTexto), (y+yTexto));
          //sentidos
-         if(contador == 4) g2.drawString("Brilho", (x+xTexto), (y+yTexto));
-         if(contador == 5) g2.drawString("Fedor", (x+xTexto), (y+yTexto));
-         if(contador == 6) g2.drawString("Brisa", (x+xTexto), (y+yTexto));
+         else if(contador == 4) g2.drawString("Brilho", (x+xTexto), (y+yTexto));
+         else if(contador == 5) g2.drawString("Fedor", (x+xTexto), (y+yTexto));
+         else if(contador == 6) g2.drawString("Brisa", (x+xTexto), (y+yTexto));
 
          //informações do agente
-         if(contador == 7) g2.drawString("Ouro pego", (x+xTexto), (y+yTexto));
-         if(contador == 8) g2.drawString("Matou Wumpus", (x+xTexto), (y+yTexto));
-         if(contador == 9) g2.drawString("Tem flecha", (x+xTexto), (y+yTexto));
+         else if(contador == 7) g2.drawString("Ouro pego", (x+xTexto), (y+yTexto));
+         else if(contador == 8) g2.drawString("Matou Wumpus", (x+xTexto), (y+yTexto));
+         else if(contador == 9) g2.drawString("Tem flecha", (x+xTexto), (y+yTexto));
+         else g2.drawString("Bias", (x+xTexto), (y+yTexto));
 
          g2.fillOval(x, y, larguraDesenho, alturaDesenho);
          y += larguraDesenho + espacoVerticalEntreNeuronio;
@@ -127,26 +135,25 @@ public class Painel extends JPanel{
 
 
    private void desenharOcultas(Graphics2D g2){
-      x += (larguraDesenho*2);
+      x += espacoHorizontalEntreCamadas;
       y = yCamadaOculta;
 
       for(contador = 0; contador < melhorAgente.rede.ocultas.length; contador++){
          for(contador2 = 0; contador2 < melhorAgente.rede.ocultas[contador].neuronios.length; contador2++){
 
             if(melhorAgente.rede.ocultas[contador].neuronios[contador2].saida > 0) g2.setColor(corNeuronioAtivo);
-            else g2.setColor(corNeuronioInativo); 
+            else g2.setColor(corNeuronioInativo);
             
             g2.fillOval(x, y, larguraDesenho, alturaDesenho);
             y += larguraDesenho + espacoVerticalEntreNeuronio;   
          }
-         x += (larguraDesenho*2);
+         x += espacoHorizontalEntreCamadas;
          y = yCamadaOculta;
       }
    }
 
 
    private void desenharSaida(Graphics2D g2){
-      x = x0 + ((larguraDesenho * 2 * melhorAgente.rede.qtdCamadasOcultas)) + (larguraDesenho * 2);
       y = yCamadaSaida;
       
       for(contador = 0; contador < melhorAgente.rede.saida.neuronios.length; contador++){
