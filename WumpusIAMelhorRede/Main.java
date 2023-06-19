@@ -55,7 +55,7 @@ public class Main{
 
     //informações
     static Janela janela;
-    static String nomeArquivoRede = "./melhores-redes/rede-fit-6277.dat";
+    static String nomeArquivoRede = "./melhores-redes/rede-fit-6285.dat";
 
     public static void main(String[] args){
 		limparConsole();
