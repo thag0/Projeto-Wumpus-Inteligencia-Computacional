@@ -148,10 +148,13 @@ public class TreinoGenetico{
 
 
    private double novoValorAleatorio(double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
-      double valor = random.nextGaussian() * (Math.abs(mediaFitness) / 2);
-      valor /= 100;
+      double valor;
+      // double valor = random.nextGaussian() * (Math.abs(mediaFitness) / 2);
+      // valor /= 100;
 
-      if(aumentarAleatoriedade) valor += random.nextDouble(-100, 100);
+      valor = random.nextDouble(-1000, 1000);
+
+      if(aumentarAleatoriedade) valor += random.nextDouble(-500, 500);
 
       return valor;
    }

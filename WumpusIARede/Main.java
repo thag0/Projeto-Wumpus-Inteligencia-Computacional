@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.05f;
+    static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -50,9 +50,9 @@ public class Main{
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
-    static final int neuroniosOcultas = 12;//12
+    static final int neuroniosOcultas = 11;//12
     static final int neuroniosSaida = 9;//9
-    static final int quantidadeOcultas = 4;//4
+    static final int quantidadeOcultas = 2;//4
 
     //informações
     static Janela janela;
