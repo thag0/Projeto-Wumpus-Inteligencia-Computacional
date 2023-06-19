@@ -22,7 +22,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.1f;
+    static double tempoAtualizacao = 0.05f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -50,9 +50,9 @@ public class Main{
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
-    static final int neuroniosOcultas = 11;//12
+    static final int neuroniosOcultas = 9;//12
     static final int neuroniosSaida = 9;//9
-    static final int quantidadeOcultas = 2;//4
+    static final int quantidadeOcultas = 3;//4
 
     //informações
     static Janela janela;
@@ -116,14 +116,13 @@ public class Main{
                 for(i = 0; i < treinoGenetico.tamanhoPopulacao; i++){//calcular uma ação de cada individuo
 
                     if(treinoGenetico.individuos.get(i).vivo){
-
                         calcularMapaSensacoesAgente(treinoGenetico.individuos.get(i));
-                        calcularSensacoes(treinoGenetico.individuos.get(i));
+                        copiarSensacoesParaAgente(treinoGenetico.individuos.get(i));
                         atualizarDados(treinoGenetico.individuos.get(i), dadosAmbiente);
                         
                         individuoMorreu = treinoGenetico.individuos.get(i).calcularAcao(dadosAmbiente);
                         if(!individuoMorreu){
-                            individuoMorreu = verificarColisao(treinoGenetico.individuos.get(i), treinoGenetico);
+                            individuoMorreu = verificarColisao(treinoGenetico.individuos.get(i));
                         }
 
                         if(!individuoMorreu){
@@ -140,17 +139,17 @@ public class Main{
                     if(treinoGenetico.individuosVivos < 1) break;
                 }
 
-                if(treinoGenetico.individuosVivos < 1){//proxima
+                if(treinoGenetico.individuosVivos < 1){//proxima geração
                     treinoGenetico.ajustarPouplacao(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
+                    novaPartida();
                     for(int j = 0; j < treinoGenetico.tamanhoPopulacao; j++){
                         copiarElementosParaAgente(treinoGenetico.individuos.get(j), wumpus, pocos, ouro);  
                     }
-                    novaPartida();
                 
-                }else{
-                    melhorAgente = treinoGenetico.melhorIndividuoVivo();//acompanhar o melhor agente
+                }else{//acompanhar o melhor agente
+                    melhorAgente = treinoGenetico.melhorIndividuoVivo();
                     calcularMapaSensacoesAgente(melhorAgente);
-                    calcularSensacoes(melhorAgente);
+                    copiarSensacoesParaAgente(melhorAgente);
                     imprimirPartida(treinoGenetico);
                     janela.desenhar(
                         melhorAgente,
@@ -574,13 +573,13 @@ public class Main{
     }
 
 
-    public static void calcularSensacoes(Agente agente){
+    public static void copiarSensacoesParaAgente(Agente agente){
         String sensacoes = agente.mapaSensacoes[agente.getX()][agente.getY()];
         agente.setSensacoes(sensacoes);
     }
 
 
-    public static boolean verificarColisao(Agente agente, TreinoGenetico treinoGenetico){
+    public static boolean verificarColisao(Agente agente){
         int i = 0;
         for(i = 0; i < agente.wumpusMapa.size(); i++){
             if((agente.getX() == agente.wumpusMapa.get(i).getX()) && (agente.getY() == agente.wumpusMapa.get(i).getY())){
@@ -630,6 +629,8 @@ public class Main{
         int acaoFeita = 10;
         int acaoNaoFeita = -10;
         
+        //casas adjascentes disponíveis
+
         if((agente.getX()-1) >= 0) dados[0] = caminhoLivre;//norte
         else dados[0] = caminhoBloqueado;
 
@@ -653,6 +654,7 @@ public class Main{
         if(mapaSensacoes[agente.getX()][agente.getY()].contains("Brisa")) dados[6] = sentindoAlgo;
         else dados[6] = sentindoNada;
 
+        //status do agente
 
         if(agente.getOuroColetado()) dados[7] = acaoFeita;
         else dados[7] = acaoNaoFeita;

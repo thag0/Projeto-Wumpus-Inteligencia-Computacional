@@ -152,9 +152,10 @@ public class TreinoGenetico{
       // double valor = random.nextGaussian() * (Math.abs(mediaFitness) / 2);
       // valor /= 100;
 
-      valor = random.nextDouble(-1000, 1000);
+      valor = random.nextDouble(-1, 1);
+      valor *= 1000;
 
-      if(aumentarAleatoriedade) valor += random.nextDouble(-500, 500);
+      if(aumentarAleatoriedade) valor += random.nextDouble(-1000, 1000);
 
       return valor;
    }

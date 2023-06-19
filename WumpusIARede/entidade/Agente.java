@@ -164,7 +164,7 @@ public class Agente extends Entidade{
 
 
     private void calcularFitness(){
-        if(movimentoAceito) this.fitness += (30 - (mapaAndado[posX][posY] * 4));
+        if(movimentoAceito) this.fitness += (30 - (mapaAndado[posX][posY] * 5));
         else{
             this.batidasParede++;
             this.fitness -= (int)(5 * batidasParede);

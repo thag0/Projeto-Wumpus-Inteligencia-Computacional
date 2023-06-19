@@ -1,6 +1,6 @@
 Tamanho da rede
 	-entrada: 10 neuronios(dados do ambiente)
-	-ocultas: 12 neuronios, 4 camadas
+	-ocultas: 9 neuronios, 3 camadas
 	-saída: 9 neuronios(ações do agente)
 
 Funções de ativação
