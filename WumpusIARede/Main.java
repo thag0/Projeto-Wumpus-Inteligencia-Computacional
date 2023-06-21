@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,7 +23,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.05f;
+    static double tempoAtualizacao = 0.06f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -153,9 +154,7 @@ public class Main{
                     imprimirPartida(treinoGenetico);
                     janela.desenhar(
                         melhorAgente,
-                        treinoGenetico.ultimoMelhorFitness,
-                        treinoGenetico.geracoesStagnadas,
-                        treinoGenetico.mediaFitness,
+                        treinoGenetico,
                         redesQueGanharam
                     );
     
@@ -181,7 +180,6 @@ public class Main{
         limparConsole();
         System.out.println("Geração atual: " + treinoGenetico.geracaoAtual);
         System.out.println("Individuos vivos: " + treinoGenetico.individuosVivos + "/" + treinoGenetico.tamanhoPopulacao);
-        System.out.println("Redes que ganharam: " + redesQueGanharam);
 
         System.out.println("\nMelhor individuo vivo");
         System.out.println("Fitness: " + melhorAgente.fitness);
@@ -601,11 +599,19 @@ public class Main{
         if(agente.getOuroColetado()){
             if((agente.getX() == xInicialAgente) && (agente.getY() == yInicialAgente)){
                 agente.fitness += 4000;
+
                 System.out.println("Agente[" + indiceAgente + "] ganhou a partida");
                 Thread.sleep((long)(1000 * 0.01));
-                agente.rede.salvarRedeArquivo("./melhores-redes/rede-fit-" + agente.fitness + ".dat");
+
+                String nomeArquivo = "./melhores-redes/rede-fit-" + agente.fitness + ".dat";
+                //salvar apenas novas redes
+                //evitar arquivos corrompidos
+                if(!(new File(nomeArquivo).exists())){
+                    agente.rede.salvarRedeArquivo(nomeArquivo);
+                }
+
                 redesQueGanharam++;
-                return true;
+                return true;//desligar agente
             }
         }
         return false;

@@ -155,7 +155,7 @@ public class TreinoGenetico{
       valor = random.nextDouble(-1, 1);
       valor *= 1000;
 
-      if(aumentarAleatoriedade) valor += random.nextDouble(-1000, 1000);
+      if(aumentarAleatoriedade) valor += random.nextDouble(-50, 50);
 
       return valor;
    }

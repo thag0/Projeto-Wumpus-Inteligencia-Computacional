@@ -4,22 +4,24 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.File;
 
 import javax.swing.JPanel;
 
 import entidade.Agente;
+import treino.TreinoGenetico;
 
 public class Painel extends JPanel{
-   final int largura = 620;
-   final int altura = 440;
+   final int largura = 500;
+   final int altura = 400;
    public Agente melhorAgente;
    Graphics2D g2;
 
    //desenho
    int contador = 0;
    int contador2 = 0;
-   int x0 = 120;
-   int y0 = 40;
+   int x0 = 120;//posição x base de desenho da rede
+   int y0 = 50;//posição y base de desenho da rede
    int x = 0;
    int y = 0;
    int yCamadaEntrada = 0;
@@ -29,19 +31,23 @@ public class Painel extends JPanel{
    int alturaDesenho = larguraDesenho;
    int espacoVerticalEntreNeuronio = 8;
    int espacoHorizontalEntreCamadas = (larguraDesenho * 2);
+   String texto = "";
 
    //informações
+   int geracaoAtual = 0;
    double mediaPesos = 0;
    double melhorFitness = 0;
    double mediaFitness = 0;
    int geracoesStagnadas = 0;
    long redesQueGanharam = 0;
 
+   File pastaRedes = new File("./melhores-redes/");
+
    int r = 150;
    int g = 110;
-   int b = 190;
+   int b = 180;
    Color corNeuronioAtivo = new Color(r, g, b);
-   Color corNeuronioInativo = new Color((int)(r * 0.3), (int)(g * 0.3), (int)(b * 0.3));
+   Color corNeuronioInativo = new Color((int)(r * 0.35), (int)(g * 0.35), (int)(b * 0.35));
 
    public Painel(){
       setBackground(Color.BLACK);
@@ -53,12 +59,18 @@ public class Painel extends JPanel{
    }
 
 
-   public void desenhar(Agente agente, double melhorFitness, int geracoesStagnadas, double mediaFitness, long redesQueGanharam){
+   public void desenhar(Agente agente, TreinoGenetico treinoGenetico, long redesQueGanharam){
+      //melhor agente
       melhorAgente = agente;
-      this.melhorFitness = melhorFitness;
-      this.geracoesStagnadas = geracoesStagnadas;
-      this.mediaFitness = mediaFitness;
+      
+      //treino
+      this.geracaoAtual = treinoGenetico.geracaoAtual;
       this.redesQueGanharam = redesQueGanharam;
+      
+      //estatisticas
+      this.melhorFitness = treinoGenetico.ultimoMelhorFitness;
+      this.geracoesStagnadas = treinoGenetico.geracoesStagnadas;
+      this.mediaFitness = treinoGenetico.mediaFitness;
       repaint();
    }
 
@@ -77,19 +89,36 @@ public class Painel extends JPanel{
       //desenhar informações
       g2.setColor(corNeuronioAtivo);
       g2.setFont(getFont().deriveFont(14f));
+
+      //primeira linha
       x = 10;
       y = 20;
-      g2.drawString(("Gerações stagnadas: " + this.geracoesStagnadas), x, y);
+      texto = "Geração atual: " + this.geracaoAtual;
+      g2.drawString(texto, x, y);
 
-      x += 180;
-      g2.drawString(("Último melhor fitness: " + (int)(this.melhorFitness)), x, y);
+      x += 200;
+      texto = "Gerações stagnadas: " + this.geracoesStagnadas;
+      g2.drawString(texto, x, y);
 
-      x += 190;
-      g2.drawString(("Última média fitness: " + (int)(this.mediaFitness)), x, y);
-
+      //segunda linha
       x = 10;
       y = 40;
-      g2.drawString(("Redes que ganharam: " + redesQueGanharam), x, y);
+      texto = "Último melhor fitness: " + (int)(this.melhorFitness);
+      g2.drawString(texto, x, y);
+
+      x += 200;
+      texto = "Última média fitness: " + (int)(this.mediaFitness);
+      g2.drawString(texto, x, y);
+
+      //terceira linha
+      x = 10;
+      y = 60;
+      texto = "Redes que ganharam: " + redesQueGanharam;
+      g2.drawString(texto, x, y);
+
+      x += 200;
+      texto = "Diversidade de redes: " + pastaRedes.listFiles().length + " redes salvas";
+      g2.drawString(texto, x, y);
 
       //desenhar camadas
       desenharCamadaEntrada(g2);    
