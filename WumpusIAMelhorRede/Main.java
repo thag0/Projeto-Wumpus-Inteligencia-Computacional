@@ -10,6 +10,7 @@ import entidade.Ouro;
 import entidade.Poco;
 import entidade.Wumpus;
 import render.Janela;
+import treino.TreinoGenetico;
 
 
 public class Main{
@@ -55,7 +56,7 @@ public class Main{
 
     //informações
     static Janela janela;
-    static String nomeArquivoRede = "./melhores-redes/rede-fit-6285.dat";
+    static String nomeArquivoRede = "./melhores-redes/rede-fit-7865.dat";
 
     public static void main(String[] args){
 		limparConsole();
@@ -99,10 +100,11 @@ public class Main{
         janela = new Janela();
         janela.painel.melhorAgente = agente;
         copiarElementosParaAgente(agente, wumpus, pocos, ouro);
+        TreinoGenetico treinoGenetico = null;
         try{
             while(rodadaAtual < rodadas){
 
-                if(agente.vivo){//calcular uma ação de cada individuo
+                if(agente.vivo){
 
                     calcularMapaSensacoesAgente(agente);
                     calcularSensacoes(agente);
@@ -132,12 +134,7 @@ public class Main{
                 calcularSensacoes(agente);
                 imprimirPartida();
                 janela.desenhar(
-                    agente,
-                    0,
-                    0,
-                    0,
-                    0
-                );
+                    agente, treinoGenetico,0);
             
                 Thread.sleep((long) (1000 * tempoAtualizacao));
             }
