@@ -12,8 +12,8 @@ import entidade.Agente;
 import treino.TreinoGenetico;
 
 public class Painel extends JPanel{
-   final int largura = 500;
-   final int altura = 400;
+   final int largura = 510;
+   final int altura = 420;
    public Agente melhorAgente;
    Graphics2D g2;
 
@@ -63,17 +63,14 @@ public class Painel extends JPanel{
       //melhor agente
       melhorAgente = agente;
       
-      if(treinoGenetico != null){
-         //treino
-         this.geracaoAtual = treinoGenetico.geracaoAtual;
-         this.redesQueGanharam = redesQueGanharam;
-         
-         //estatisticas
-         this.melhorFitness = treinoGenetico.ultimoMelhorFitness;
-         this.geracoesStagnadas = treinoGenetico.geracoesStagnadas;
-         this.mediaFitness = treinoGenetico.mediaFitness;
-      }
-
+      //treino
+      this.geracaoAtual = treinoGenetico.geracaoAtual;
+      this.redesQueGanharam = redesQueGanharam;
+      
+      //estatisticas
+      this.melhorFitness = treinoGenetico.ultimoMelhorFitness;
+      this.geracoesStagnadas = treinoGenetico.geracoesStagnadas;
+      this.mediaFitness = treinoGenetico.mediaFitness;
       repaint();
    }
 
