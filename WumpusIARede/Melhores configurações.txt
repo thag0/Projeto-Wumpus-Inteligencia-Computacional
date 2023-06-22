@@ -5,9 +5,9 @@ Tamanho da rede
 
 Funções de ativação
 	-função de ativação: tangente hiperbolica
-	-função de ativação na saída: relu derivada
+	-função de ativação na saída: argmax
 
-BIAS = 0;
+BIAS = true;
 
 Mapa treinado
 	-wumpus.clear();

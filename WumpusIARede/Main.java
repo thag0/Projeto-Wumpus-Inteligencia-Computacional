@@ -23,7 +23,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.06f;
+    static double tempoAtualizacao = 0.25f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -47,7 +47,7 @@ public class Main{
     static String[] posicoesMapa = {"x", ".", "+"};
 
     //dados pro treino
-    static final int TAMANHO_POPULACAO = 6_000;
+    static final int TAMANHO_POPULACAO = 5_000;
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
@@ -61,12 +61,9 @@ public class Main{
 
     public static void main(String[] args){
 		limparConsole();
-		// System.out.print("Tamanho do mapa: ");
-		// try{
-		// 	tamanhoMapa = Integer.parseInt(pegarEntrada());
-		// }catch(Exception e){ tamanhoMapa = 4; }
 
-        tamanhoMapa = 7;
+        tamanhoMapa = 7;//treinar em mapa fixo
+
         criarMapas();
         calcularMapaPosicoes();
 

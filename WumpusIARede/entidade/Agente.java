@@ -62,7 +62,7 @@ public class Agente extends Entidade{
         this.vivo = true;
 
         rede = new RedeNeural(nEntrada, nOcultas, nSaida, qtdOcultas);
-        this.rede.configurarFuncaoAtivacao(5, 2);
+        this.rede.configurarFuncaoAtivacao(5, 8);
         this.rede.compilar();
 
         this.tamanhoMapa = tamanhoMapa;
