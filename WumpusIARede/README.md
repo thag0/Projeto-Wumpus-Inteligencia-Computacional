@@ -18,11 +18,11 @@ O algoritmo de treino apenas replica o melhor agente de cada geração e faz alg
 # Mais informações sobre a rede
 Alguns dados mais técnicos da melhor configuração que conseguimos até agora foram:
 - Dez neurônios na camada de entrada para os dados do ambiente e do agente;
-- Quatro camadas ocultas com 12 neurônios cada;
+- Três camadas ocultas com 9 neurônios cada;
 - Nove neurônios na camada de saída para cada ação que o agente pode executar;
 - Função de ativação usada nas camadas ocultas foi a tangente hiperbólica;
-- Função de ativação usada na camada de saída foi a ReLU(rectified linear unit) na forma derivada;
+- Função de ativação usada na camada de saída foi a Argmax;
 - O valor dos pesos aleatórios da primeira geração de redes varia entre -100 e 100;
-- Bias como uma contante para toda a rede e com o valor de 1;
+- Bias como um neurônio adicional em cada camada, com exceção da camada de saída;
 
 ![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/0d60eba6-5421-4379-99ca-d302e2a811e1)
