@@ -1,5 +1,7 @@
 # Treinamento do agente de aprendizagem com uso de redes neurais artificiais
 
+![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/be02580f-317b-48e2-a4bc-efb38afcea5c)
+
 Diretório destinado ao código fonte do algoritmo de treinamento para os agentes do mundo de wumpus
 
 A implementação do agente de aprendizagem foi feita usando redes neurais artificiais, um algortimo que se assemelha ao funcionamento do cérebro humano. Cada rede é composta por camadas 
@@ -24,5 +26,3 @@ Alguns dados mais técnicos da melhor configuração que conseguimos até agora 
 - Função de ativação usada na camada de saída foi a Argmax;
 - O valor dos pesos aleatórios da primeira geração de redes varia entre -100 e 100;
 - Bias como um neurônio adicional em cada camada, com exceção da camada de saída;
-
-![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/0d60eba6-5421-4379-99ca-d302e2a811e1)
