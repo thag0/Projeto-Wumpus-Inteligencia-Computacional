@@ -26,6 +26,10 @@ Para evitar comportamentos inesperados, o agente possui algumas variáveis na ho
   dos limites do mapa) e se o agente atirou numa casa qualquer sem o montro.
 - Caso o agente decida pegar numa casa que contém o ouro, sua pontuação aumentará drasticamente, também aplicaremos uma penalidade caso o agente decida pegar o ouro
   numa casa que não tem o ouro.
+- Por último, quando o agente já possuir o ouro e estiver de volta na casa de origem, sua pontuação aumentará drasticamente.
+
+A partir desses critérios, nós tentaremos moldar um comportamento inteligente para o agente, fazendo ele explorar mais o mapa, evitar bater nas paredes, andar menos em círculos, atirar somente quando necessário e pegar o ouro somente quando necessário. Com isso forçamos que o algoritmo de treino replique os genes dos agentes que tiveram as 
+melhores decisões baseadas no objetivo imposto.
 
 # Mais informações sobre a rede
 Alguns dados mais técnicos da melhor configuração que conseguimos até agora foram:
