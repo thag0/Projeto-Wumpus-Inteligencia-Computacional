@@ -17,6 +17,16 @@ O algoritmo de treino apenas replica o melhor agente de cada geração e faz alg
 - Os indivíduos da nova geração irão receber a rede neural do último melhor agente, mas com pequenas modificações aleatórias com o objetivo de gerar um agente ainda melhor;
 - Repetimos o processo até conseguir um agente que ganhe o jogo.
 
+# Cálculo da pontuação do agente
+Para evitar comportamentos inesperados, o agente possui algumas variáveis na hora de calcular a sua pontuação(fitness).
+- A pontuação do agente é aumentada caso ele explore uma casa que não tinha ido anteriormente, caso ele ande muitas vezes na mesma casa, esse comportamento
+  resultará numa penalidade na pontuação dele. O mesmo vale para as vezes que ele tentar andar para fora dos limites do mapa, é calculado quantas vezes ele "bateu
+  na parede" e também aplicaremos uma penalização.
+- Quando o agente atirar, iremos verificar quatro condições: se o agente acertou o Wumpus, se o gente tentou atirar sem ter flecha, se o agente atirou numa parede(fora
+  dos limites do mapa) e se o agente atirou numa casa qualquer sem o montro.
+- Caso o agente decida pegar numa casa que contém o ouro, sua pontuação aumentará drasticamente, também aplicaremos uma penalidade caso o agente decida pegar o ouro
+  numa casa que não tem o ouro.
+
 # Mais informações sobre a rede
 Alguns dados mais técnicos da melhor configuração que conseguimos até agora foram:
 - Dez neurônios na camada de entrada para os dados do ambiente e do agente;
