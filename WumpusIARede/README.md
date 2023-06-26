@@ -17,6 +17,9 @@ O algoritmo de treino apenas replica o melhor agente de cada geração e faz alg
 - Os indivíduos da nova geração irão receber a rede neural do último melhor agente, mas com pequenas modificações aleatórias com o objetivo de gerar um agente ainda melhor;
 - Repetimos o processo até conseguir um agente que ganhe o jogo.
 
+# Detalhes do algoritmo genético usado
+  //
+
 # Cálculo da pontuação do agente
 Para evitar comportamentos inesperados, o agente possui algumas variáveis na hora de calcular a sua pontuação(fitness).
 - A pontuação do agente é aumentada caso ele explore uma casa que não tinha ido anteriormente, caso ele ande muitas vezes na mesma casa, esse comportamento
