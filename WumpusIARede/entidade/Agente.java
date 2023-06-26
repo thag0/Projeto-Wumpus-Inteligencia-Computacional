@@ -33,6 +33,7 @@ public class Agente extends Entidade{
     int flechaAcertada = 0;
     boolean pegouOuro = false;
     int batidasParede = 0;
+    double[] saidaRede;
 
     public int mapaAndado[][];//evitar redes que andam em circulos
 
@@ -61,9 +62,10 @@ public class Agente extends Entidade{
         //informações para o treino
         this.vivo = true;
 
-        rede = new RedeNeural(nEntrada, nOcultas, nSaida, qtdOcultas);
+        this.rede = new RedeNeural(nEntrada, nOcultas, nSaida, qtdOcultas);
         this.rede.configurarFuncaoAtivacao(5, 8);
         this.rede.compilar();
+        saidaRede = new double[this.rede.saida.neuronios.length];
 
         this.tamanhoMapa = tamanhoMapa;
         this.mapaAndado = new int[tamanhoMapa][tamanhoMapa];
@@ -103,6 +105,7 @@ public class Agente extends Entidade{
 
 
     //uso de rede neural na tomada de decisões
+    //a rede vai receber os dados do ambiente e definir uma saída
     public boolean calcularAcao(double[] dadosAmbiente){
 
         //controle do tempo de treino
@@ -111,52 +114,63 @@ public class Agente extends Entidade{
 
         this.rede.calcularSaida(dadosAmbiente);
 
-        movimentoAceito = false;
         flechaAcertada = 0;//valor fora dos retornos da função atirar
+        movimentoAceito = false;
         pegouOuro = false;
-
-        /* cada saída da rede representa uma ação
-         * execução tem ordem de prioridade
-         * executa o primeiro neuronio ativo começando do n0 
-         */
-        //mover
-        if(this.rede.saida.neuronios[0].saida > 0){
-            movimentoAceito = validarAcao((this.getX()-1), this.getY(), "norte");
-            if(movimentoAceito) mover("norte");
         
-        }else if(this.rede.saida.neuronios[1].saida > 0){
-            movimentoAceito = validarAcao((this.getX()+1), this.getY(), "sul");
-            if(movimentoAceito) mover("sul");
-        
-        }else if(this.rede.saida.neuronios[2].saida > 0){
-            movimentoAceito = validarAcao(this.getX(), (this.getY()-1), "oeste");
-            if(movimentoAceito) mover("oeste");
-        
-        }else if(this.rede.saida.neuronios[3].saida > 0){
-            movimentoAceito = validarAcao(this.getX(), (this.getY()+1), "leste");
-            if(movimentoAceito) mover("leste");
-        
-        //direções do tiro
-        }else if(this.rede.saida.neuronios[4].saida > 0){
-            flechaAcertada = atirar(this.wumpusMapa, "norte");
-        
-        }else if(this.rede.saida.neuronios[5].saida > 0){
-            flechaAcertada = atirar(this.wumpusMapa, "sul");
-        
-        }else if(this.rede.saida.neuronios[6].saida > 0){
-            flechaAcertada = atirar(this.wumpusMapa, "oeste");
-        
-        }else if(this.rede.saida.neuronios[7].saida > 0){
-            flechaAcertada = atirar(this.wumpusMapa, "leste");
-        
-        //ouro
-        }else if(this.rede.saida.neuronios[8].saida > 0){
-            pegouOuro = pegarOuro(ouroMapa);
+        //pegar os dados da saída da rede
+        saidaRede = this.rede.obterSaida();
+        int indice;
+        for(indice = 0; indice < saidaRede.length; indice++){
+            if(saidaRede[indice] > 0) break;
         }
 
+        switch(indice){
+            //movimentação---
+            case 0:
+                movimentoAceito = validarAcao((this.getX()-1), this.getY(), "norte");
+                if(movimentoAceito) mover("norte");    
+            break;
+
+            case 1:
+                movimentoAceito = validarAcao((this.getX()+1), this.getY(), "sul");
+                if(movimentoAceito) mover("sul");            
+            break;
+
+            case 2:
+                movimentoAceito = validarAcao(this.getX(), (this.getY()-1), "oeste");
+                if(movimentoAceito) mover("oeste");
+            break;
+
+            case 3:
+                movimentoAceito = validarAcao(this.getX(), (this.getY()+1), "leste");
+                if(movimentoAceito) mover("leste");
+            break;
+
+            //tiro---
+            case 4:
+                flechaAcertada = atirar(this.wumpusMapa, "norte");
+            break;
+
+            case 5:
+                flechaAcertada = atirar(this.wumpusMapa, "sul");
+            break;
+
+            case 6:
+                flechaAcertada = atirar(this.wumpusMapa, "oeste");
+            break;
+
+            case 7:
+                flechaAcertada = atirar(this.wumpusMapa, "leste");    
+            break;
+
+            //ouro---
+            case 8:
+                pegouOuro = pegarOuro(ouroMapa);
+            break;
+        }
 
         calcularFitness();
-
 
         rodadasJogadas++;
         return false;//agente não morreu
@@ -164,6 +178,8 @@ public class Agente extends Entidade{
 
 
     private void calcularFitness(){
+        //evitar do agente andar muito em circulos
+        //recompensar mais agentes que exploram o mapa
         if(movimentoAceito) this.fitness += (30 - (mapaAndado[posX][posY] * 5));
         else{
             this.batidasParede++;

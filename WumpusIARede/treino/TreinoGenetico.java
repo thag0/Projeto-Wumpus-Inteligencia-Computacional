@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import entidade.Agente;
+import rna.Camada;
+import rna.Neuronio;
 import rna.RedeNeural;
 
 public class TreinoGenetico{
@@ -50,7 +52,7 @@ public class TreinoGenetico{
    }
 
 
-   public void ajustarPouplacao(int tamanhoMapa, int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas, String[][] mapaSensacoes){
+   public void mutacao(int tamanhoMapa, int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas, String[][] mapaSensacoes){
       System.out.println("Ajustando população");
 
       mediaFitness = calcularMediaFitness();
@@ -89,13 +91,74 @@ public class TreinoGenetico{
 
 
    @SuppressWarnings("unused")
-   private void crossover(){
+   private void crossover(int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas){
+      //escolhendo os melhores individuos
       Agente primeiroIndividuo = escolherMelhorIndividuo();
       Agente segundoIndividuo = escolherSegundoMelhorIndividuo();
-      Agente filho = null;
+      
+      //convertendo as redes para vetores
+      ArrayList<Neuronio> rede1 = redeParaVetorNeuronios(primeiroIndividuo.rede);
+      ArrayList<Neuronio> rede2 = redeParaVetorNeuronios(segundoIndividuo.rede);
+      
+      
+      //aplicar o crossover
+      
+      
+      //criando filho
+      Agente filho;
+      ArrayList<Neuronio> redeFilho = null;
+      RedeNeural rede = new RedeNeural(qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas);
+      rede = vetorNeuroniosParaRede(redeFilho, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas);
+   }
 
-      System.out.println(primeiroIndividuo.fitness);
-      System.out.println(segundoIndividuo.fitness);
+
+   private ArrayList<Neuronio> redeParaVetorNeuronios(RedeNeural rede){
+      ArrayList<Neuronio> neuronios = new ArrayList<>();
+      
+      //camada de entrada
+      for(Neuronio neuronio : rede.entrada.neuronios){
+         neuronios.add(neuronio);
+      }
+      //camadas ocultas
+      for(Camada oculta : rede.ocultas){
+         for(Neuronio neuronio : oculta.neuronios){
+            neuronios.add(neuronio);
+         }
+      }
+      //camada de saídas
+      for(Neuronio neuronio : rede.saida.neuronios){
+         neuronios.add(neuronio);
+      }
+
+      return neuronios;
+   }
+
+
+   private RedeNeural vetorNeuroniosParaRede(ArrayList<Neuronio> neuronios, int nEntrada, int nOcultas, int nSaida, int qOcultas){
+      RedeNeural rede = new RedeNeural(nEntrada, nOcultas, nSaida, qOcultas);
+
+      //camada de entrada
+      int indice = 0;
+      for(int i = 0; i < nEntrada; i++){
+         rede.entrada.neuronios[i] = neuronios.get(indice);
+         indice++;
+      }
+
+      //camadas ocultas
+      for(int i = 0; i < qOcultas; i++){
+         for(int j = 0; j < nOcultas; j++){
+            rede.ocultas[qOcultas].neuronios[nOcultas] = neuronios.get(indice);
+            indice++;
+         }
+      }
+
+      //camada de saída
+      for(int i = 0; i < nSaida; i++){
+         rede.saida.neuronios[i] = neuronios.get(indice);
+         indice++;
+      }
+
+      return rede;
    }
 
 
