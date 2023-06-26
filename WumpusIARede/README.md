@@ -12,7 +12,7 @@ pegou o ouro, matou o wumpus e se ainda tem flecha.
 O algoritmo de treino apenas replica o melhor agente de cada geração e faz algumas alterações na rede dele. Os passos mais detalhados são comentados a seguir:
 
 - Criar vários agentes com redes neurais aleatórias;
-- Quando todos os agentes morrerem, calculamos o agente com maior pontuação;
+- Após todos os agentes terminarem de jogar, calculamos o agente com a maior pontuação;
 - Clonamos a rede neural do melhor agente para ela ser usada na próxima geração;
 - Os indivíduos da nova geração irão receber a rede neural do último melhor agente, mas com pequenas modificações aleatórias com o objetivo de gerar um agente ainda melhor;
 - Repetimos o processo até conseguir um agente que ganhe o jogo.
