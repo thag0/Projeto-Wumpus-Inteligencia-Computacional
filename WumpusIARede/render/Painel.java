@@ -1,5 +1,6 @@
 package render;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -65,6 +66,9 @@ public class Painel extends JPanel{
 
    Color corConexaoAtiva = new Color((int)(r * 0.8), (int)(g * 0.8), (int)(b * 0.8));
    Color corConexaoInativa = new Color(30, 30, 30);
+
+   BasicStroke linhaDesenho = new BasicStroke(1.8f);
+
 
    public Painel(){
       setBackground(Color.black);
@@ -148,6 +152,8 @@ public class Painel extends JPanel{
       desenharOcultas(g2);
       desenharSaida(g2);
       
+      //conexões entre os neuronios
+      g2.setStroke(linhaDesenho);
       desenharConexoesEntrada(g2);
       desenharConexoesOcultas(g2);
       desenharConexoesSaida(g2);

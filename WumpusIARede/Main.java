@@ -23,7 +23,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.1f;
+    static double tempoAtualizacao = 0.125f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -47,7 +47,7 @@ public class Main{
     static String[] posicoesMapa = {"x", ".", "+"};
 
     //dados pro treino
-    static final int TAMANHO_POPULACAO = 5_000;
+    static final int TAMANHO_POPULACAO = 6_000;
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
@@ -138,7 +138,8 @@ public class Main{
                 }
 
                 if(treinoGenetico.individuosVivos < 1){//proxima geração
-                    treinoGenetico.mutacao(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
+                    System.out.println("Ajustando população");
+                    treinoGenetico.ajustarPorCrossover(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
                     novaPartida();
                     for(int j = 0; j < treinoGenetico.tamanhoPopulacao; j++){
                         copiarElementosParaAgente(treinoGenetico.individuos.get(j), wumpus, pocos, ouro);  

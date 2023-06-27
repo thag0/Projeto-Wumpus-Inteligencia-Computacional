@@ -52,9 +52,7 @@ public class TreinoGenetico{
    }
 
 
-   public void mutacao(int tamanhoMapa, int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas, String[][] mapaSensacoes){
-      System.out.println("Ajustando população");
-
+   public void ajustarPorMutacao(int tamanhoMapa, int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas, String[][] mapaSensacoes){
       mediaFitness = calcularMediaFitness();
       desvioPadraoFitness = calcularDesvioPadraoFitness();
 
@@ -90,29 +88,69 @@ public class TreinoGenetico{
    }
 
 
-   @SuppressWarnings("unused")
-   private void crossover(int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas){
-      //escolhendo os melhores individuos
-      Agente primeiroIndividuo = escolherMelhorIndividuo();
-      Agente segundoIndividuo = escolherSegundoMelhorIndividuo();
+   public void ajustarPorCrossover(int tamanhoMapa, int qtdNeuroniosEntrada, int qtdNeuroniosOcultas, int qtdNeuroniosSaida, int qtdOcultas, String[][] mapaSensacoes){
+      mediaFitness = calcularMediaFitness();
+      desvioPadraoFitness = calcularDesvioPadraoFitness();
       
-      //convertendo as redes para vetores
-      ArrayList<Neuronio> rede1 = redeParaVetorNeuronios(primeiroIndividuo.rede);
-      ArrayList<Neuronio> rede2 = redeParaVetorNeuronios(segundoIndividuo.rede);
-      
-      
-      //aplicar o crossover
-      
-      
-      //criando filho
-      Agente filho;
-      ArrayList<Neuronio> redeFilho = null;
-      RedeNeural rede = new RedeNeural(qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas);
-      rede = vetorNeuroniosParaRede(redeFilho, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas);
+      Agente agente1 = escolherMelhorIndividuo();
+      Agente agente2 = escolherSegundoMelhorIndividuo();
+
+      if(agente1.fitness == ultimoMelhorFitness) geracoesStagnadas++;
+      else{
+         ultimoMelhorFitness = agente1.fitness;
+         geracoesStagnadas = 0;
+      }
+
+      individuos.clear();
+      for(int i = 0; i < tamanhoPopulacao; i++){
+         if(i == 0){//elitismo
+            Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
+            novoAgente.rede = agente1.rede.clone();
+            carregarIndividuo(novoAgente);
+         
+         }else if(i == 1){//elitismo
+            Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
+            novoAgente.rede = agente2.rede.clone();
+            carregarIndividuo(novoAgente);
+
+         }else{
+            Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
+            RedeNeural novaRede = crossover(agente1.rede.clone(), agente2.rede.clone());
+            novoAgente.rede = novaRede;
+            ajustarPesos(novaRede, 400);
+            carregarIndividuo(novoAgente);
+         }
+      }
+
+      geracaoAtual++;
    }
 
 
-   private ArrayList<Neuronio> redeParaVetorNeuronios(RedeNeural rede){
+   private RedeNeural crossover(RedeNeural rede1, RedeNeural rede2){
+      ArrayList<Neuronio> vetorRede1 = redeParaVetor(rede1);
+      ArrayList<Neuronio> vetorRede2 = redeParaVetor(rede2);
+      ArrayList<Neuronio> vetorCombinado = new ArrayList<>();
+
+      int tamanhoDNA = vetorRede1.size();
+      int indiceCorte = random.nextInt(tamanhoDNA);//ponto de separação da combinação
+      
+      //combinando os genes
+      for(int i = 0; i < vetorRede1.size(); i++){
+         if(i < indiceCorte) vetorCombinado.add(vetorRede1.get(i));
+         else vetorCombinado.add(vetorRede2.get(i));
+      }
+      
+      int nEntrada = rede1.entrada.neuronios.length-1;//excluir o bias
+      int nOcultas = rede1.ocultas[0].neuronios.length-1;//excluir o bias
+      int nSaida = rede1.saida.neuronios.length;
+      int qOcultas = rede1.ocultas.length;
+      RedeNeural redeCombinada = vetorParaRede(vetorCombinado, nEntrada, nOcultas, nSaida, qOcultas);
+
+      return redeCombinada;
+   }
+
+
+   private ArrayList<Neuronio> redeParaVetor(RedeNeural rede){
       ArrayList<Neuronio> neuronios = new ArrayList<>();
       
       //camada de entrada
@@ -134,11 +172,13 @@ public class TreinoGenetico{
    }
 
 
-   private RedeNeural vetorNeuroniosParaRede(ArrayList<Neuronio> neuronios, int nEntrada, int nOcultas, int nSaida, int qOcultas){
+   private RedeNeural vetorParaRede(ArrayList<Neuronio> neuronios, int nEntrada, int nOcultas, int nSaida, int qOcultas){
       RedeNeural rede = new RedeNeural(nEntrada, nOcultas, nSaida, qOcultas);
+      rede.configurarFuncaoAtivacao(5, 8);
+      rede.compilar();
 
+      int indice = 0;//correspondente ao indice da lista de neuronios
       //camada de entrada
-      int indice = 0;
       for(int i = 0; i < nEntrada; i++){
          rede.entrada.neuronios[i] = neuronios.get(indice);
          indice++;
@@ -147,7 +187,7 @@ public class TreinoGenetico{
       //camadas ocultas
       for(int i = 0; i < qOcultas; i++){
          for(int j = 0; j < nOcultas; j++){
-            rede.ocultas[qOcultas].neuronios[nOcultas] = neuronios.get(indice);
+            rede.ocultas[i].neuronios[j] = neuronios.get(indice);
             indice++;
          }
       }
@@ -185,7 +225,7 @@ public class TreinoGenetico{
    }
 
 
-   public void ajustarPesos(RedeNeural rede, double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
+   private void ajustarPesos(RedeNeural rede, double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
       int i, j, k;//contadores locais
 
       //percorrer camada de entrada
@@ -204,6 +244,32 @@ public class TreinoGenetico{
             //percorrer pesos de cada neuronio da camada oculta
             for(k = 0; k < rede.ocultas[i].neuronios[j].pesos.length; k++){
                rede.ocultas[i].neuronios[j].pesos[k] += novoValorAleatorio(mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
+            }
+         }
+      }
+   }
+
+
+   //Ajusta os pesos com valores já definidos
+   private void ajustarPesos(RedeNeural rede, double alcancePesos){
+      int i, j, k;//contadores locais
+
+      //percorrer camada de entrada
+      //percorrer neuronios da camada de entrada
+      for(i = 0; i < rede.entrada.neuronios.length; i++){
+         //percerrer pesos de cada neuronio da camada de entrada
+         for(j = 0; j < rede.entrada.neuronios[i].pesos.length; j++){
+            rede.entrada.neuronios[i].pesos[j] += random.nextDouble((-1 * alcancePesos), alcancePesos);
+         }
+      }
+
+      //percorrer camadas ocultas
+      for(i = 0; i < rede.ocultas.length; i++){
+         //percorrer neuronios da camada oculta
+         for(j = 0; j < rede.ocultas[i].neuronios.length; j++){
+            //percorrer pesos de cada neuronio da camada oculta
+            for(k = 0; k < rede.ocultas[i].neuronios[j].pesos.length; k++){
+               rede.ocultas[i].neuronios[j].pesos[k] += random.nextDouble((-1 * alcancePesos), alcancePesos);
             }
          }
       }
