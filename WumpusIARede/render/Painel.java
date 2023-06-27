@@ -57,20 +57,26 @@ public class Painel extends JPanel{
 
    File pastaRedes = new File("./melhores-redes/");
 
-   int r = 150;
-   int g = 110;
-   int b = 180;
+   int r = 145;
+   int g = 100;
+   int b = 160;
    Color corNeuronioAtivo = new Color(r, g, b);
    Color corNeuronioInativo = new Color((int)(r * 0.35), (int)(g * 0.35), (int)(b * 0.35));
+
+   Color corConexaoAtiva = new Color((int)(r * 0.8), (int)(g * 0.8), (int)(b * 0.8));
    Color corConexaoInativa = new Color(30, 30, 30);
 
    public Painel(){
-      setBackground(Color.BLACK);
+      setBackground(Color.black);
       setPreferredSize(new Dimension(largura, altura));
       setFocusable(true);
       setDoubleBuffered(true);
       setEnabled(true);
       setVisible(true);
+
+      //evitar null pointer exception na rede
+      rede = new RedeNeural(1, 1, 1, 1);
+      rede.compilar();
    }
 
 
@@ -104,7 +110,7 @@ public class Painel extends JPanel{
 
       //desenhar informações
       g2.setColor(corNeuronioAtivo);
-      g2.setFont(getFont().deriveFont(14f));
+      g2.setFont(getFont().deriveFont(15f));
 
       //primeira linha
       x = 10;
@@ -142,19 +148,17 @@ public class Painel extends JPanel{
       desenharOcultas(g2);
       desenharSaida(g2);
       
-      //desenhar camadas
-      desenharConexoes(g2);
-      desenharCamadaEntrada(g2);    
-      desenharOcultas(g2);
-      desenharSaida(g2);
+      desenharConexoesEntrada(g2);
+      desenharConexoesOcultas(g2);
+      desenharConexoesSaida(g2);
 
       g2.dispose();
    }
 
 
-   private void desenharConexoes(Graphics2D g2){
+   private void desenharConexoesEntrada(Graphics2D g2){
       //evitar muitas instanciações
-      int i, j, k;
+      int i, j;
 
       //entrada -> primeira oculta
       for(i = 0; i < coordEntrada.size(); i++){//percorrer neuronios da entrada
@@ -162,12 +166,28 @@ public class Painel extends JPanel{
             c1 = coordEntrada.get(i);
             c2 = coordOcultas.get(0).get(j);
 
-            if(c1.valor > 0 && c2.valor > 0) g2.setColor(corNeuronioAtivo);
+            if(c1.valor > 0 && c2.valor > 0) g2.setColor(corConexaoAtiva);
             else g2.setColor(corConexaoInativa);
             g2.drawLine(c1.x, c1.y, c2.x-larguraDesenho, c2.y);
          }
       }
+      //reforçar as linhas ativas
+      for(i = 0; i < coordEntrada.size(); i++){
+         for(j = 0; j < coordOcultas.get(0).size()-1; j++){
+            c1 = coordEntrada.get(i);
+            c2 = coordOcultas.get(0).get(j);
 
+            if(c1.valor > 0 && c2.valor > 0){
+               g2.setColor(corConexaoAtiva);
+               g2.drawLine(c1.x, c1.y, c2.x-larguraDesenho, c2.y);
+            }
+         }
+      }
+   }
+
+
+   private void desenharConexoesOcultas(Graphics2D g2){
+      int i, j, k;
       //primeira oculta -> ultima oculta
       for(i = 0; i < coordOcultas.size()-1; i++){//percorrer ocultas
          for(j = 0; j < coordOcultas.get(i).size(); j++){//percorrer neuronios da camada oculta atual
@@ -175,22 +195,52 @@ public class Painel extends JPanel{
                c1 = coordOcultas.get(i).get(j);
                c2 = coordOcultas.get(i+1).get(k);
 
-               if(c1.valor > 0 && c2.valor > 0) g2.setColor(corNeuronioAtivo);
+               if(c1.valor > 0 && c2.valor > 0) g2.setColor(corConexaoAtiva);
                else g2.setColor(corConexaoInativa);
                g2.drawLine(c1.x, c1.y, c2.x-larguraDesenho, c2.y);
             }
          }
       }
+      //reforçar as linhas ativas
+      for(i = 0; i < coordOcultas.size()-1; i++){
+         for(j = 0; j < coordOcultas.get(i).size(); j++){
+            for(k = 0; k < coordOcultas.get(i+1).size()-1; k++){
+               c1 = coordOcultas.get(i).get(j);
+               c2 = coordOcultas.get(i+1).get(k);
 
+               if(c1.valor > 0 && c2.valor > 0){
+                  g2.setColor(corConexaoAtiva);
+                  g2.drawLine(c1.x, c1.y, c2.x-larguraDesenho, c2.y);
+               }
+            }
+         }
+      }      
+   }
+
+
+   private void desenharConexoesSaida(Graphics2D g2){
       //ultima oculta -> saída
+      int i, j;
       for(i = 0; i < coordOcultas.get(coordOcultas.size()-1).size(); i++){//percorrer neuronios da ultima oculta
          for(j = 0; j < coordSaida.size(); j++){//percorrer neuronios da saida
             c1 = coordOcultas.get(coordOcultas.size()-1).get(i);
             c2 = coordSaida.get(j);
 
-            if(c1.valor > 0 && c2.valor > 0) g2.setColor(corNeuronioAtivo);
+            if(c1.valor > 0 && c2.valor > 0) g2.setColor(corConexaoAtiva);
             else g2.setColor(corConexaoInativa);
             g2.drawLine(c1.x, c1.y, c2.x-larguraDesenho, c2.y);
+         }
+      }
+      //reforçar as linhas ativas
+      for(i = 0; i < coordOcultas.get(coordOcultas.size()-1).size(); i++){
+         for(j = 0; j < coordSaida.size(); j++){
+            c1 = coordOcultas.get(coordOcultas.size()-1).get(i);
+            c2 = coordSaida.get(j);
+
+            if(c1.valor > 0 && c2.valor > 0){
+               g2.setColor(corConexaoAtiva);
+               g2.drawLine(c1.x, c1.y, c2.x-larguraDesenho, c2.y);
+            }
          }
       }
    }
@@ -206,7 +256,6 @@ public class Painel extends JPanel{
          if(rede.entrada.neuronios[contador].saida > 0) g2.setColor(corNeuronioAtivo);
          else g2.setColor(corNeuronioInativo);
          
-         //direções
          int xTexto = -110;
          int yTexto = 14;
          //posições disponíveis
@@ -242,15 +291,13 @@ public class Painel extends JPanel{
 
          // coordOcultas.get(contador).clear();//limpar lista da camada atual pra não estourar a memória
          coordOcultas.add(new ArrayList<>());
-
          for(contador2 = 0; contador2 < rede.ocultas[contador].neuronios.length; contador2++){//percorrer neuronios de uma oculta
-
-            if(rede.ocultas[contador].neuronios[contador2].saida > 0) g2.setColor(corNeuronioAtivo);
-            else g2.setColor(corNeuronioInativo);
             
             //salvar coordenada do centro do desenho do neuronio
             coordOcultas.get(contador).add(new Coordenada(x+larguraDesenho, y+(larguraDesenho/2), rede.ocultas[contador].neuronios[contador2].saida));
 
+            if(rede.ocultas[contador].neuronios[contador2].saida > 0) g2.setColor(corNeuronioAtivo);
+            else g2.setColor(corNeuronioInativo);
             g2.fillOval(x, y, larguraDesenho, alturaDesenho);
             y += larguraDesenho + espacoVerticalEntreNeuronio;   
          }
