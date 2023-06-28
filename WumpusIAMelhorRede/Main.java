@@ -56,7 +56,7 @@ public class Main{
 
     //informações
     static Janela janela;
-    static String nomeArquivoRede = "./melhores-redes/rede-fit-6285.dat";
+    static String nomeArquivoRede = "./melhores-redes/rede-fit-6255.dat";
 
     public static void main(String[] args){
 		limparConsole();
@@ -131,7 +131,7 @@ public class Main{
                 }
             
                 imprimirPartida();
-                janela.desenhar(agente, treinoGenetico, 0);
+                janela.desenhar(agente, treinoGenetico, 0, 0);
             
                 Thread.sleep((long) (1000 * tempoAtualizacao));
             }
