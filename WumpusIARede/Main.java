@@ -23,7 +23,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.125f;
+    static double tempoAtualizacao = 0.2f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -48,12 +48,15 @@ public class Main{
 
     //dados pro treino
     static final int TAMANHO_POPULACAO = 6_000;
+    static final int EVOLUCAO_MUTACAO = 1;
+    static final int EVOLUCAO_CROSSOVER = 2;
+    static int metodoEvolucao = 2;//alterar metodo evolutivo
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
-    static final int neuroniosOcultas = 9;//12
+    static final int neuroniosOcultas = 9;//9
     static final int neuroniosSaida = 9;//9
-    static final int quantidadeOcultas = 3;//4
+    static final int quantidadeOcultas = 3;//3
 
     //informações
     static Janela janela;
@@ -139,7 +142,15 @@ public class Main{
 
                 if(treinoGenetico.individuosVivos < 1){//proxima geração
                     System.out.println("Ajustando população");
-                    treinoGenetico.ajustarPorCrossover(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
+
+                    if(metodoEvolucao == EVOLUCAO_CROSSOVER){
+                        treinoGenetico.ajustarPorCrossover(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
+                    
+                    }else if(metodoEvolucao == EVOLUCAO_MUTACAO){
+                        treinoGenetico.ajustarPorMutacao(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
+                    
+                    }else throw new IllegalArgumentException("Método de evolução fora dos parâmetros suportados");
+
                     novaPartida();
                     for(int j = 0; j < treinoGenetico.tamanhoPopulacao; j++){
                         copiarElementosParaAgente(treinoGenetico.individuos.get(j), wumpus, pocos, ouro);  
@@ -153,7 +164,8 @@ public class Main{
                     janela.desenhar(
                         melhorAgente,
                         treinoGenetico,
-                        redesQueGanharam
+                        redesQueGanharam,
+                        metodoEvolucao
                     );
     
                     Thread.sleep((long) (1000 * tempoAtualizacao));
