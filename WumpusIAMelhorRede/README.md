@@ -1,6 +1,6 @@
 # Código fonte da implementação com rede neural no projeto
 
-![gifMelhorRedeJogando](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/a68b9c8e-7d3c-4ed1-8e01-ce49cee62801)
+![gifMelhorRedeJogando](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/15332233-a30e-41a4-8e79-91dc3b8819a7)
 
 Repositório dedicado ao código fonte do projeto que executa apenas a melhor rede para um único agente.
 
