@@ -23,7 +23,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.2f;
+    static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -46,8 +46,13 @@ public class Main{
 
     static String[] posicoesMapa = {"x", ".", "+"};
 
-    //dados pro treino
-    static final int TAMANHO_POPULACAO = 6_000;
+    //hiperparametros do treino
+    static final int TAMANHO_POPULACAO = 5_000;
+    static final double TAXA_CROSSOVER = 0.9;
+    static final double TAXA_MUTACAO = 0.1;
+    static final boolean APLICAR_ELITISMO = false;
+    
+    //método evolutivo
     static final int EVOLUCAO_MUTACAO = 1;
     static final int EVOLUCAO_CROSSOVER = 2;
     static int metodoEvolucao = 2;//alterar metodo evolutivo
@@ -96,7 +101,7 @@ public class Main{
         double[] dadosAmbiente = new double[neuroniosEntrada];
         for(int i = 0; i < dadosAmbiente.length; i++) dadosAmbiente[i] = 0;
 
-        TreinoGenetico treinoGenetico = new TreinoGenetico(TAMANHO_POPULACAO);
+        TreinoGenetico treinoGenetico = new TreinoGenetico(TAMANHO_POPULACAO, TAXA_CROSSOVER, TAXA_MUTACAO, APLICAR_ELITISMO);
         boolean individuoMorreu = false;
 
         //primeira geração
@@ -115,7 +120,6 @@ public class Main{
             while(rodadaAtual < rodadas){
 
                 for(i = 0; i < treinoGenetico.tamanhoPopulacao; i++){//calcular uma ação de cada individuo
-
                     if(treinoGenetico.individuos.get(i).vivo){
                         calcularMapaSensacoesAgente(treinoGenetico.individuos.get(i));
                         copiarSensacoesParaAgente(treinoGenetico.individuos.get(i));
@@ -189,7 +193,7 @@ public class Main{
     public static void imprimirPartida(TreinoGenetico treinoGenetico){
         limparConsole();
         System.out.println("Geração atual: " + treinoGenetico.geracaoAtual);
-        System.out.println("Individuos vivos: " + treinoGenetico.individuosVivos + "/" + treinoGenetico.tamanhoPopulacao);
+        System.out.println("Individuos vivos: " + treinoGenetico.individuosVivos + "/" + treinoGenetico.individuos.size());
 
         System.out.println("\nMelhor individuo vivo");
         System.out.println("Fitness: " + melhorAgente.fitness);

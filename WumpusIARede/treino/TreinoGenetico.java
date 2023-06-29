@@ -15,6 +15,10 @@ public class TreinoGenetico{
    public double mediaFitness = 0.0;
    public double desvioPadraoFitness = 0.0;
 
+   public final double TAXA_CROSSOVER;
+   public final double TAXA_MUTACAO;
+   public final boolean ELITISMO;
+
    public int geracaoAtual = 0;
 
    //não deixar stagnar
@@ -26,7 +30,14 @@ public class TreinoGenetico{
    int i, j, k;//contadores
    Random random = new Random();
 
-   public TreinoGenetico(int tamanhoPopulacao){
+   public TreinoGenetico(int tamanhoPopulacao, double taxaCrossover, double taxaMutacao, boolean aplicarElitismo){
+      if(taxaCrossover < 0 || taxaCrossover > 1) throw new IllegalArgumentException("A taxa de crossover deve estar entre 0 e 1");
+      if(taxaMutacao < 0 || taxaMutacao > 1) throw new IllegalArgumentException("A taxa de mutação deve estar entre 0 e 1");
+
+      this.TAXA_CROSSOVER = taxaCrossover;
+      this.TAXA_MUTACAO = taxaMutacao;
+      this.ELITISMO = aplicarElitismo;
+
       this.tamanhoPopulacao = tamanhoPopulacao;
 
       individuos = new ArrayList<Agente>();
@@ -76,10 +87,19 @@ public class TreinoGenetico{
 
       //gerar novos individuos
       individuos.clear();
-      for(i = 0; i < tamanhoPopulacao; i++){
+      int indiceInicio = 0;
+      if(ELITISMO){//preservar dna do melhor agente
          Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
          novoAgente.rede = melhorRede.clone();
-         ajustarPesos(novoAgente.rede, mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
+         carregarIndividuo(novoAgente);
+
+         indiceInicio++;
+      }
+
+      for(int i = indiceInicio; i < tamanhoPopulacao; i++){
+         Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
+         novoAgente.rede = melhorRede.clone();
+         mutacao(novoAgente.rede, mediaFitness, desvioPadraoFitness, aumentarAleatoriedade);
          carregarIndividuo(novoAgente);    
       }
 
@@ -102,24 +122,25 @@ public class TreinoGenetico{
       }
 
       individuos.clear();
-      for(int i = 0; i < tamanhoPopulacao; i++){
-         if(i == 0){//elitismo
-            Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
-            novoAgente.rede = agente1.rede.clone();
-            carregarIndividuo(novoAgente);
-         
-         }else if(i == 1){//elitismo
-            Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
-            novoAgente.rede = agente2.rede.clone();
-            carregarIndividuo(novoAgente);
+      int indiceInicio = 0;
+      if(ELITISMO){//preservar o dna completo dos melhores individuos
+         Agente novoAgente1 = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
+         novoAgente1.rede = agente1.rede.clone();
+         carregarIndividuo(novoAgente1);
+         indiceInicio++;
 
-         }else{
+         Agente novoAgente2 = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
+         novoAgente2.rede = agente2.rede.clone();
+         carregarIndividuo(novoAgente2);
+         indiceInicio++;
+      }
+
+      for(int i = indiceInicio; i < tamanhoPopulacao; i++){
             Agente novoAgente = gerarIndividuo(tamanhoMapa, qtdNeuroniosEntrada, qtdNeuroniosOcultas, qtdNeuroniosSaida, qtdOcultas, mapaSensacoes);
             RedeNeural novaRede = crossover(agente1.rede.clone(), agente2.rede.clone());
+            ajustarPesos(novaRede, 1000);
             novoAgente.rede = novaRede;
-            ajustarPesos(novaRede, 400);
             carregarIndividuo(novoAgente);
-         }
       }
 
       geracaoAtual++;
@@ -129,12 +150,15 @@ public class TreinoGenetico{
    private RedeNeural crossover(RedeNeural rede1, RedeNeural rede2){
       ArrayList<Neuronio> vetorRede1 = redeParaVetor(rede1);
       ArrayList<Neuronio> vetorRede2 = redeParaVetor(rede2);
-      ArrayList<Neuronio> vetorCombinado = new ArrayList<>();
+      if(vetorRede1.size() != vetorRede2.size()) throw new IllegalArgumentException("As redes 1 e 2 possuem tamanhos diferentes");
+
+      if(random.nextDouble() > TAXA_CROSSOVER) return rede1.clone();
 
       int tamanhoDNA = vetorRede1.size();
       int indiceCorte = random.nextInt(tamanhoDNA);//ponto de separação da combinação
       
       //combinando os genes
+      ArrayList<Neuronio> vetorCombinado = new ArrayList<>();
       for(int i = 0; i < vetorRede1.size(); i++){
          if(i < indiceCorte) vetorCombinado.add(vetorRede1.get(i));
          else vetorCombinado.add(vetorRede2.get(i));
@@ -225,8 +249,9 @@ public class TreinoGenetico{
    }
 
 
-   private void ajustarPesos(RedeNeural rede, double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
+   private void mutacao(RedeNeural rede, double mediaFitness, double desvioPadraoFitness, boolean aumentarAleatoriedade){
       int i, j, k;//contadores locais
+      if(random.nextDouble() > TAXA_MUTACAO) return;//não aplicar mutação
 
       //percorrer camada de entrada
       //percorrer neuronios da camada de entrada

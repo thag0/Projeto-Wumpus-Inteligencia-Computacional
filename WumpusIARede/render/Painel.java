@@ -64,7 +64,7 @@ public class Painel extends JPanel{
    int b = 210;
    Color corNeuronioAtivo = new Color(r, g, b);
    Color corNeuronioInativo = new Color((int)(r * 0.4), (int)(g * 0.4), (int)(b * 0.4));
-   Color corBordaNeuronio = Color.black;
+   Color corBordaNeuronio = Color.BLACK;
 
    Color corConexaoAtiva = new Color((int)(r * 0.7), (int)(g * 0.7), (int)(b * 0.7));
    Color corConexaoInativa = new Color((int)(r * 0.25), (int)(g * 0.25), (int)(b * 0.25));
@@ -75,7 +75,7 @@ public class Painel extends JPanel{
 
 
    public Painel(){
-      setBackground(new Color(20, 20, 20));
+      setBackground(new Color(24, 24, 24));
       setPreferredSize(new Dimension(largura, altura));
       setFocusable(true);
       setDoubleBuffered(true);
@@ -148,7 +148,8 @@ public class Painel extends JPanel{
       x = 420;
       texto = "Método evolutivo: ";
       if(metodoEvolucao == 1) texto += "Mutação";
-      else texto  += "Crossover";
+      else if(metodoEvolucao == 2) texto  += "Crossover";
+      else texto += "NA";
       g2.drawString(texto, x, y);
 
       //terceira linha
