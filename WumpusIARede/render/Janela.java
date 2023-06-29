@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import entidade.Agente;
-import treino.TreinoGenetico;
+import treino.AlgoritmoGenetico;
 
 public class Janela extends JFrame{
 
@@ -29,7 +29,7 @@ public class Janela extends JFrame{
    }
 
 
-   public void desenhar(Agente agente, TreinoGenetico treinoGenetico, long redesQueGanharam, int metodoEvolucao){
+   public void desenhar(Agente agente, AlgoritmoGenetico treinoGenetico, long redesQueGanharam, int metodoEvolucao){
       painel.desenhar(agente, treinoGenetico, redesQueGanharam, metodoEvolucao);
    }
 }

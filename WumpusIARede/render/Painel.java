@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import entidade.Agente;
 import rna.RedeNeural;
-import treino.TreinoGenetico;
+import treino.AlgoritmoGenetico;
 
 public class Painel extends JPanel{
    final int largura = 640;
@@ -88,7 +88,7 @@ public class Painel extends JPanel{
    }
 
 
-   public void desenhar(Agente agente, TreinoGenetico treinoGenetico, long redesQueGanharam, int metodoEvolucao){
+   public void desenhar(Agente agente, AlgoritmoGenetico treinoGenetico, long redesQueGanharam, int metodoEvolucao){
       //melhor agente
       melhorAgente = agente;
       rede = agente.rede;

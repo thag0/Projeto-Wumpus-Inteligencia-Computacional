@@ -180,10 +180,10 @@ public class Agente extends Entidade{
     private void calcularFitness(){
         //evitar do agente andar muito em circulos
         //recompensar mais agentes que exploram o mapa
-        if(movimentoAceito) this.fitness += (30 - (mapaAndado[posX][posY] * 5));
+        if(movimentoAceito) this.fitness += (30 - (mapaAndado[posX][posY] * 10));
         else{
             this.batidasParede++;
-            this.fitness -= (int)(5 * batidasParede);
+            this.fitness -= (int)(10 * batidasParede);
         }
 
         if(flechaAcertada == 1) this.fitness += 1500;//atirou e matou

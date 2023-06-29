@@ -10,7 +10,8 @@ import entidade.Ouro;
 import entidade.Poco;
 import entidade.Wumpus;
 import render.Janela;
-import treino.TreinoGenetico;
+import render.JanelaGraficoBarras;
+import treino.AlgoritmoGenetico;
 
 
 public class Main{
@@ -18,14 +19,14 @@ public class Main{
     static int tamanhoMapa;
     static int quantidadePoco;
     static int quantidadeWumpus;
-    static String mapa[][];
-    static String mapaPosicoes[][];
-    static String mapaSensacoes[][];
+    static String[][] mapa;
+    static String[][] mapaPosicoes;
+    static String[][] mapaSensacoes;
 
     //simulações
     static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
-    static int rodadas = 1000;
+    static int rodadas = 300;
 
     //elementos
     static Agente agente;
@@ -48,9 +49,8 @@ public class Main{
 
     //hiperparametros do treino
     static final int TAMANHO_POPULACAO = 5_000;
+    static final double TAXA_MUTACAO = 1;
     static final double TAXA_CROSSOVER = 0.9;
-    static final double TAXA_MUTACAO = 0.1;
-    static final boolean APLICAR_ELITISMO = false;
     
     //método evolutivo
     static final int EVOLUCAO_MUTACAO = 1;
@@ -66,6 +66,8 @@ public class Main{
     //informações
     static Janela janela;
     static long redesQueGanharam = 0;
+
+    static int[] melhoresFitness = new int[rodadas];
 
     public static void main(String[] args){
 		limparConsole();
@@ -101,7 +103,7 @@ public class Main{
         double[] dadosAmbiente = new double[neuroniosEntrada];
         for(int i = 0; i < dadosAmbiente.length; i++) dadosAmbiente[i] = 0;
 
-        TreinoGenetico treinoGenetico = new TreinoGenetico(TAMANHO_POPULACAO, TAXA_CROSSOVER, TAXA_MUTACAO, APLICAR_ELITISMO);
+        AlgoritmoGenetico treinoGenetico = new AlgoritmoGenetico(TAMANHO_POPULACAO, TAXA_CROSSOVER, TAXA_MUTACAO);
         boolean individuoMorreu = false;
 
         //primeira geração
@@ -117,7 +119,7 @@ public class Main{
 
         int i = 0; //contador
         try{
-            while(rodadaAtual < rodadas){
+            while(rodadaAtual <= rodadas){
 
                 for(i = 0; i < treinoGenetico.tamanhoPopulacao; i++){//calcular uma ação de cada individuo
                     if(treinoGenetico.individuos.get(i).vivo){
@@ -147,6 +149,8 @@ public class Main{
                 if(treinoGenetico.individuosVivos < 1){//proxima geração
                     System.out.println("Ajustando população");
 
+                    melhoresFitness[treinoGenetico.geracaoAtual] = treinoGenetico.escolherMelhorIndividuo().fitness;
+
                     if(metodoEvolucao == EVOLUCAO_CROSSOVER){
                         treinoGenetico.ajustarPorCrossover(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
                     
@@ -165,12 +169,7 @@ public class Main{
                     calcularMapaSensacoesAgente(melhorAgente);
                     copiarSensacoesParaAgente(melhorAgente);
                     imprimirPartida(treinoGenetico);
-                    janela.desenhar(
-                        melhorAgente,
-                        treinoGenetico,
-                        redesQueGanharam,
-                        metodoEvolucao
-                    );
+                    janela.desenhar(melhorAgente, treinoGenetico, redesQueGanharam, metodoEvolucao);
     
                     Thread.sleep((long) (1000 * tempoAtualizacao));
                     if(treinoGenetico.geracaoAtual % 30 == 0) System.gc();//limpar lixo
@@ -179,6 +178,13 @@ public class Main{
         }catch(Exception e){
             e.printStackTrace();
         }
+        janela.dispose();
+
+        JanelaGraficoBarras janelaGrafico = new JanelaGraficoBarras();
+        for(int j = 0; j < melhoresFitness.length; j++){
+            melhoresFitness[j] /= janelaGrafico.painel.getHeight()/4;
+        }
+        janelaGrafico.desenhar(melhoresFitness);
     }
 
 
@@ -186,11 +192,11 @@ public class Main{
     public static void novaPartida(){
         gerarEntidadesFixas();
         calcularMapaSensacoes();
-        //rodadaAtual++;
+        rodadaAtual++;
     }
 
 
-    public static void imprimirPartida(TreinoGenetico treinoGenetico){
+    public static void imprimirPartida(AlgoritmoGenetico treinoGenetico){
         limparConsole();
         System.out.println("Geração atual: " + treinoGenetico.geracaoAtual);
         System.out.println("Individuos vivos: " + treinoGenetico.individuosVivos + "/" + treinoGenetico.individuos.size());
