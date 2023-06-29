@@ -17,7 +17,7 @@ O algoritmo de treino apenas replica o melhor agente de cada geração e faz alg
 - Repetimos o processo até conseguir um agente que ganhe o jogo.
 
 # Detalhes do algoritmo genético usado
-No problema prospoto, utlizamos dois método de evolução para as gerações, mutações e crossover:
+No problema prospoto, utlizamos dois método de evolução para as gerações, mutações e crossover, em ambos os métodos foram atribuídas taxas de mutação e crossover além de o algoritmo também poder aplicar o método de elitismo, que preserva os melhores DNAs da geração passada. Mais detalhes dos algoritmos são:
  - Na mutação, nós selecionamos o melhor indivíduo da geração, clonamos a rede neural dele para os seus filhos e cada filho sofrerá uma mutação em cada peso da rede neural dele.
  - No método de crossover são selecionados os dois melhores agentes da geração, serializamos as redes em uma forma vetorial, com as redes em formato de vetores é selecionado aleatoriamente um ponto de corte, todos os genes anteriores a esse ponto serão dedicados ao melhor agente e todos os genes acima do corte serão dedicados ao segundo melhor agente, com isso temos um novo dna resultante de uma combinação, em seguida convertemos o vetor de dna no modelo de rede neural usado e aplicamos pequenas mutações nele.
 
