@@ -4,12 +4,12 @@
 
 Diretório destinado ao código fonte do algoritmo de treinamento para os agentes do mundo de wumpus
 
-A implementação do agente de aprendizagem foi feita usando redes neurais artificiais, um algortimo que se assemelha ao funcionamento do cérebro humano. Cada rede é composta por camadas e cada camada é composta por neurônios artificiais, o modelo de rede neural criado é baseado no processo de *feedforward*, então alimentamos a rede com os dados do ambiente que foram julgados necessários para e rede aprender, são eles:
+A implementação do agente de aprendizagem foi feita usando redes neurais artificiais, um algortimo que se assemelha ao funcionamento do cérebro humano. Cada rede é composta por camadas e cada camada é composta por neurônios artificiais, o modelo de rede neural criado é baseado no processo de *feedforward* chamado de Multilayer Perceptron, então alimentamos a rede com os dados do ambiente que foram julgados necessários para e rede aprender, são eles:
  - Posições norte, sul, leste e oeste disponíveis;
  - Sensações na casa atual tais como fedor, brisa e brilho;
  - Alguns atributos do próprio agente que a rede controla como a informação se ele pegou o ouro, matou o wumpus e se ainda tem flecha.
 
-O algoritmo de treino apenas replica o melhor agente de cada geração e faz algumas alterações na rede dele. Os passos mais detalhados são comentados a seguir:
+O algoritmo de treino se baseia em simular diversas redes neurais, cada uma com suas diferentes caracteristicas, e deixar elas jogando até todos os agentes morrerem. Os passos mais detalhados são comentados a seguir:
 - Criar vários agentes com redes neurais aleatórias;
 - Após todos os agentes terminarem de jogar, calculamos as pontuações para cada agente;
 - Selecionamos os melhores indivíduos daquela geração, baseado na sua pontuação(fitness);
