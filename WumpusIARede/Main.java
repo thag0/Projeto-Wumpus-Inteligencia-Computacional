@@ -10,7 +10,6 @@ import entidade.Ouro;
 import entidade.Poco;
 import entidade.Wumpus;
 import render.Janela;
-import render.JanelaGraficoBarras;
 import treino.AlgoritmoGenetico;
 
 
@@ -26,7 +25,7 @@ public class Main{
     //simulações
     static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
-    static int rodadas = 300;
+    static int rodadas = 20;//equivalente as gerações, -1 = treino infinito
 
     //elementos
     static Agente agente;
@@ -49,7 +48,7 @@ public class Main{
 
     //hiperparametros do treino
     static final int TAMANHO_POPULACAO = 5_000;
-    static final double TAXA_MUTACAO = 1;
+    static final double TAXA_MUTACAO = 0.95;
     static final double TAXA_CROSSOVER = 0.9;
     
     //método evolutivo
@@ -178,13 +177,6 @@ public class Main{
         }catch(Exception e){
             e.printStackTrace();
         }
-        janela.dispose();
-
-        JanelaGraficoBarras janelaGrafico = new JanelaGraficoBarras();
-        for(int j = 0; j < melhoresFitness.length; j++){
-            melhoresFitness[j] /= janelaGrafico.painel.getHeight()/4;
-        }
-        janelaGrafico.desenhar(melhoresFitness);
     }
 
 
@@ -192,7 +184,7 @@ public class Main{
     public static void novaPartida(){
         gerarEntidadesFixas();
         calcularMapaSensacoes();
-        rodadaAtual++;
+        if(rodadas != -1)rodadaAtual++;
     }
 
 
