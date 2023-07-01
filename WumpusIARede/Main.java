@@ -25,7 +25,7 @@ public class Main{
     //simulações
     static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
-    static int rodadas = 20;//equivalente as gerações, -1 = treino infinito
+    static int rodadas = 100;
 
     //elementos
     static Agente agente;
@@ -65,8 +65,6 @@ public class Main{
     //informações
     static Janela janela;
     static long redesQueGanharam = 0;
-
-    static int[] melhoresFitness = new int[rodadas];
 
     public static void main(String[] args){
 		limparConsole();
@@ -148,8 +146,6 @@ public class Main{
                 if(treinoGenetico.individuosVivos < 1){//proxima geração
                     System.out.println("Ajustando população");
 
-                    melhoresFitness[treinoGenetico.geracaoAtual] = treinoGenetico.escolherMelhorIndividuo().fitness;
-
                     if(metodoEvolucao == EVOLUCAO_CROSSOVER){
                         treinoGenetico.ajustarPorCrossover(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
                     
@@ -184,7 +180,7 @@ public class Main{
     public static void novaPartida(){
         gerarEntidadesFixas();
         calcularMapaSensacoes();
-        if(rodadas != -1)rodadaAtual++;
+        //rodadaAtual++;
     }
 
 
