@@ -23,7 +23,7 @@ public class Main{
     static String[][] mapaSensacoes;
 
     //simulações
-    static double tempoAtualizacao = 0.1f;
+    static double tempoAtualizacao = 0.05f;
     static int rodadaAtual = 0;
     static int rodadas = 100;
 
@@ -48,13 +48,13 @@ public class Main{
 
     //hiperparametros do treino
     static final int TAMANHO_POPULACAO = 5_000;
-    static final double TAXA_MUTACAO = 0.95;
-    static final double TAXA_CROSSOVER = 0.9;
+    static final double TAXA_MUTACAO = 1;
+    static final double TAXA_CROSSOVER = 0.95;
     
     //método evolutivo
     static final int EVOLUCAO_MUTACAO = 1;
     static final int EVOLUCAO_CROSSOVER = 2;
-    static int metodoEvolucao = 2;//alterar metodo evolutivo
+    static int metodoEvolucao = 1;//alterar metodo evolutivo
     
     //dados da rede
     static final int neuroniosEntrada = 10;//10
@@ -651,10 +651,10 @@ public class Main{
         if((agente.getX()+1) < mapa.length) dados[1] = caminhoLivre;//sul
         else dados[1] = caminhoBloqueado;
 
-        if((agente.getY()-1) >= 0) dados[2] = caminhoLivre;//leste
+        if((agente.getY()-1) >= 0) dados[2] = caminhoLivre;//oeste
         else dados[2] = caminhoBloqueado;
 
-        if((agente.getY()+1) <  mapa.length) dados[3] = caminhoLivre;//oeste
+        if((agente.getY()+1) <  mapa.length) dados[3] = caminhoLivre;//leste
         else dados[3] = caminhoBloqueado;
 
         //sensações na casa atual

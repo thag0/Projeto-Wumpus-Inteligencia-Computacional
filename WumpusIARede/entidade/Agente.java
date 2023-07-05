@@ -15,7 +15,6 @@ public class Agente extends Entidade{
     private int flechas;
     private int flechasAtiradas;
     private int flechasAcertadas;
-    public int passosDados = 0;
 
     private boolean ouroColetado = false;
     private boolean matouWumpus = false;
@@ -30,8 +29,8 @@ public class Agente extends Entidade{
 
     //variaveis de controle da saída da rede
     boolean movimentoAceito = false;
-    int flechaAcertada = 0;
     boolean pegouOuro = false;
+    int flechaAcertada = 0;
     int batidasParede = 0;
     double[] saidaRede;
 
@@ -74,6 +73,7 @@ public class Agente extends Entidade{
                 mapaAndado[i][j] = 0;
             }
         }
+        mapaAndado[posX][posY] = 1;//contabilizar a primeira casa
 
         this.mapaSensacoes = mapaSensacoes;
     }
@@ -96,7 +96,6 @@ public class Agente extends Entidade{
     public void getInformacoesRede(){
         System.out.println("Vivo: " + this.vivo);
         System.out.println("Fitness: " + this.fitness);
-        System.out.println("Passos:" + passosDados);
         System.out.println("RodadasJogadas:" + rodadasJogadas);
         for(int i = 0; i < this.rede.saida.neuronios.length; i++){
             System.out.println("N" + i + ": " + this.rede.saida.neuronios[i].saida);
@@ -148,26 +147,13 @@ public class Agente extends Entidade{
             break;
 
             //tiro---
-            case 4:
-                flechaAcertada = atirar(this.wumpusMapa, "norte");
-            break;
-
-            case 5:
-                flechaAcertada = atirar(this.wumpusMapa, "sul");
-            break;
-
-            case 6:
-                flechaAcertada = atirar(this.wumpusMapa, "oeste");
-            break;
-
-            case 7:
-                flechaAcertada = atirar(this.wumpusMapa, "leste");    
-            break;
+            case 4: flechaAcertada = atirar(this.wumpusMapa, "norte"); break;
+            case 5: flechaAcertada = atirar(this.wumpusMapa, "sul"); break;
+            case 6: flechaAcertada = atirar(this.wumpusMapa, "oeste"); break;
+            case 7: flechaAcertada = atirar(this.wumpusMapa, "leste"); break;
 
             //ouro---
-            case 8:
-                pegouOuro = pegarOuro(ouroMapa);
-            break;
+            case 8: pegouOuro = pegarOuro(ouroMapa); break;
         }
 
         calcularFitness();
@@ -198,6 +184,7 @@ public class Agente extends Entidade{
                     mapaAndado[i][j] = 0;
                 }
             }
+            mapaAndado[this.getX()][this.getY()] = 1;
         }
         else this.fitness -= 10;//pegou numa casa sem ouro
     }
@@ -205,20 +192,11 @@ public class Agente extends Entidade{
 
     public void mover(String direcao){
         switch(direcao){
-            case "norte":
-                posX -= 1;
-            break;
-            case "sul":
-                posX += 1;
-            break;
-            case "oeste":
-                posY -= 1;
-            break;
-            case "leste":
-                posY += 1;
-            break;
+            case "norte": posX -= 1; break;
+            case "sul":   posX += 1; break;
+            case "oeste": posY -= 1; break;
+            case "leste": posY += 1; break;
         }
-        passosDados++;
         mapaAndado[this.posX][this.posY] += 1;
     }
 

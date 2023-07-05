@@ -75,7 +75,7 @@ public class Painel extends JPanel{
 
 
    public Painel(){
-      setBackground(new Color(24, 24, 24));
+      setBackground(new Color(25, 25, 25));
       setPreferredSize(new Dimension(largura, altura));
       setFocusable(true);
       setDoubleBuffered(true);
