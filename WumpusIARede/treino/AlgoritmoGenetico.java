@@ -25,8 +25,6 @@ public class AlgoritmoGenetico{
    public int ultimoMelhorFitness = 0;
    boolean aumentarAleatoriedade = false;
    
-
-   int i, j, k;//contadores
    Random random = new Random();
 
    public AlgoritmoGenetico(int tamanhoPopulacao, double taxaCrossover, double taxaMutacao){
@@ -241,17 +239,17 @@ public class AlgoritmoGenetico{
    private void ajustarPesos(RedeNeural rede, double alcancePesos){
       if(alcancePesos < 0) throw new IllegalArgumentException("O valor de alcance dos pesos deve ser maior que zero");
       
-      int cont;//contador local
+      int i;//contador local
       for(Neuronio neuronio : rede.entrada.neuronios){
-         for(cont = 0; cont < neuronio.pesos.length; cont++){
-            neuronio.pesos[cont] += random.nextDouble((-1 * alcancePesos), alcancePesos); 
+         for(i = 0; i < neuronio.pesos.length; i++){
+            neuronio.pesos[i] += random.nextDouble((-1 * alcancePesos), alcancePesos); 
          }
       }
 
       for(Camada camada : rede.ocultas){
          for(Neuronio neuronio : camada.neuronios){
-            for(cont = 0; cont < neuronio.pesos.length; cont++){
-               neuronio.pesos[cont] += random.nextDouble((-1 * alcancePesos), alcancePesos);    
+            for(i = 0; i < neuronio.pesos.length; i++){
+               neuronio.pesos[i] += random.nextDouble((-1 * alcancePesos), alcancePesos);    
             }
          }
       }
@@ -276,7 +274,7 @@ public class AlgoritmoGenetico{
       int melhorValor = this.individuos.get(0).fitness;
       int indice = 0;
    
-      for (i = 0; i < tamanhoPopulacao; i++){
+      for (int i = 0; i < tamanhoPopulacao; i++){
          if(i == 0){
             melhorValor = individuos.get(i).fitness;
             indice = i;
@@ -323,7 +321,7 @@ public class AlgoritmoGenetico{
       int melhorValor = 0;
       int indice = 0;
    
-      for (i = 0; i < individuos.size(); i++){
+      for (int i = 0; i < individuos.size(); i++){
          if(individuos.get(i).vivo){
             if(i == 0){
                melhorValor = individuos.get(i).fitness;
