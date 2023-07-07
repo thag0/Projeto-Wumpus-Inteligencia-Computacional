@@ -16,6 +16,10 @@ O algoritmo de treino se baseia em simular diversas redes neurais, cada uma com 
 - De acordo com o método evolutivo utilizado, criamos uma nova população para jogar a partida;
 - Repetimos o processo até conseguir um agente que ganhe o jogo.
 
+O programa irá pedir a informação de quantas gerações irão ser usadas durante o treino e qual método evolutivo será aplicado na passagem das gerações, no fim da execução do treino séra exibido um gráfico(apenas para ilustrar) que nos dirá como foi o progresso dos melhores fitness de cada geração:
+
+![graficoBarras](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/6db4be92-8cc8-406b-9edc-33fe07aedcf1)
+
 # Detalhes do algoritmo genético usado
 No problema prospoto, utlizamos dois método de evolução para as gerações, mutações e crossover, em ambos os métodos foram atribuídas taxas de mutação e crossover além de o algoritmo também poder aplicar o método de elitismo, que preserva os melhores DNAs da geração passada. Mais detalhes dos algoritmos são:
  - Na mutação, nós selecionamos o melhor indivíduo da geração, clonamos a rede neural dele para os seus filhos e cada filho sofrerá uma mutação em cada peso da rede neural dele.
