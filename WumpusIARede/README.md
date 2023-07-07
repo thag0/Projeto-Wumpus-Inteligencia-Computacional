@@ -19,7 +19,7 @@ O algoritmo de treino se baseia em simular diversas redes neurais, cada uma com 
 O programa irá pedir a informação de quantas gerações irão ser usadas durante o treino e qual método evolutivo será aplicado na passagem das gerações, no fim da execução do treino séra exibido um gráfico(apenas para ilustrar) que nos dirá como foi o progresso dos melhores fitness de cada geração:
 
 ![graficoBarras](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/6db4be92-8cc8-406b-9edc-33fe07aedcf1)
-*o gráfico é apenas ilustrativo e foi desenvolvido sem uso de bibliotecas adicionais, então é normal esperar que não tenha nada demais além da informação pura*
+*o gráfico é apenas ilustrativo e foi desenvolvido por mim sem uso de bibliotecas adicionais, então temos apenas a abstração dos dados, para termos uma noção de como aconteceu o processo de treino(se houve evolução ou convergência)*
 
 # Detalhes do algoritmo genético usado
 No problema prospoto, utlizamos dois método de evolução para as gerações, mutações e crossover, em ambos os métodos foram atribuídas taxas de mutação e crossover além de o algoritmo também poder aplicar o método de elitismo, que preserva os melhores DNAs da geração passada. Mais detalhes dos algoritmos são:
