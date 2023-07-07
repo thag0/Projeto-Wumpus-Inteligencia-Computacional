@@ -9,6 +9,7 @@ import entidade.Entidade;
 import entidade.Ouro;
 import entidade.Poco;
 import entidade.Wumpus;
+import grafico.JanelaGraficoBarras;
 import render.Janela;
 import treino.AlgoritmoGenetico;
 
@@ -23,7 +24,7 @@ public class Main{
     static String[][] mapaSensacoes;
 
     //simulações
-    static double tempoAtualizacao = 0.05f;
+    static double tempoAtualizacao = 0.005f;
     static int rodadaAtual = 0;
     static int rodadas = 100;
 
@@ -66,6 +67,9 @@ public class Main{
     static Janela janela;
     static long redesQueGanharam = 0;
 
+    //grafico
+    static int[] melhoresFitness = new int[rodadas];
+
     public static void main(String[] args){
 		limparConsole();
 
@@ -77,6 +81,8 @@ public class Main{
 		novaPartida();
 
         loopJogo();
+
+        graficoBarras();
     }
 
 
@@ -145,6 +151,7 @@ public class Main{
 
                 if(treinoGenetico.individuosVivos < 1){//proxima geração
                     System.out.println("Ajustando população");
+                    melhoresFitness[treinoGenetico.geracaoAtual] = treinoGenetico.escolherMelhorIndividuo().fitness;//grafico
 
                     if(metodoEvolucao == EVOLUCAO_CROSSOVER){
                         treinoGenetico.ajustarPorCrossover(tamanhoMapa, neuroniosEntrada, neuroniosOcultas, neuroniosSaida, quantidadeOcultas, mapaSensacoes);
@@ -173,6 +180,8 @@ public class Main{
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        janela.dispose();
     }
 
 
@@ -180,7 +189,7 @@ public class Main{
     public static void novaPartida(){
         gerarEntidadesFixas();
         calcularMapaSensacoes();
-        //rodadaAtual++;
+        rodadaAtual++;
     }
 
 
@@ -704,5 +713,23 @@ public class Main{
 
         //adicionar ouro
         agente.ouroMapa = new Ouro(ouro.getX(), ouro.getY());
+    }
+
+
+    public static void graficoBarras(){
+        JanelaGraficoBarras jGrafico = new JanelaGraficoBarras();
+
+        //normalizar dados
+        double maxAbs = 0;
+        for (int j = 0; j < melhoresFitness.length; j++) {
+            double absValue = Math.abs(melhoresFitness[j]);
+            if (absValue > maxAbs) {
+                maxAbs = absValue;
+            }
+        }
+        for (int j = 0; j < melhoresFitness.length; j++) {
+            melhoresFitness[j] = (int) (melhoresFitness[j] / maxAbs * (jGrafico.painel.getHeight() / 2) * 0.95);
+        }
+        jGrafico.desenhar(melhoresFitness);
     }
 }
