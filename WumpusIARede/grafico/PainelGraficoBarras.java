@@ -21,12 +21,15 @@ public class PainelGraficoBarras extends JPanel{
    int x0 = largura/2;
    int y0 = altura/2;
 
+   Color corBarraPositiva = new Color(50, 200, 20, 220);
+   Color corBarraNegativa = new Color(200, 50, 20, 220);
+
    public PainelGraficoBarras(){
       setVisible(true);
       setPreferredSize(new Dimension(largura, altura));
       setDoubleBuffered(true);
 
-      setBackground(Color.BLACK);
+      setBackground(new Color(20, 20, 20));
    }
 
 
@@ -60,7 +63,12 @@ public class PainelGraficoBarras extends JPanel{
       int maiorAbsoluto;
       maiorAbsoluto = Math.max(menorValor, maiorValor);
 
-      escala = (double) ((altura-y0) / maiorAbsoluto);
+      try{
+         escala = (double) ((altura-y0) / maiorAbsoluto);
+      }catch(Exception e){
+         System.out.println("Erro inesperado ao gerar o gráfico");
+         return;
+      }
 
       repaint();
    }
@@ -89,8 +97,8 @@ public class PainelGraficoBarras extends JPanel{
          if(y[i] >= 0) yDesenho = y0 - alturaBarra;
          else yDesenho = y0;
 
-         if(y[i] > 0) g2.setColor(Color.green);
-         else g2.setColor(Color.red);
+         if(y[i] > 0) g2.setColor(corBarraPositiva);
+         else g2.setColor(corBarraNegativa);
          g2.fillRect(xDesenho, yDesenho, larguraDesenho, alturaBarra);
 
          xDesenho += larguraDesenho;
