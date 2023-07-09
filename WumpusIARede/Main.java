@@ -9,10 +9,10 @@ import entidade.Entidade;
 import entidade.Ouro;
 import entidade.Poco;
 import entidade.Wumpus;
-import grafico.JanelaGraficoBarras;
-import render.Janela;
-import treino.AlgoritmoGenetico;
 
+import render.Janela;
+
+import treino.AlgoritmoGenetico;
 
 public class Main{
     //partes do mapa
@@ -24,9 +24,9 @@ public class Main{
     static String[][] mapaSensacoes;
 
     //simulações
-    static double tempoAtualizacao = 0.01f;
+    static double tempoAtualizacao = 0.02f;
     static int rodadaAtual = 0;
-    static int rodadas = 100;
+    static int rodadas = 200;
 
     //elementos
     static Agente agente;
@@ -67,24 +67,19 @@ public class Main{
     static Janela janela;
     static long redesQueGanharam = 0;
 
-    //grafico
-    static int[] melhoresFitness;
-    static boolean mostrarGrafico = false;
 
     public static void main(String[] args){
 		limparConsole();
 
         tamanhoMapa = 7;//treinar em mapa fixo
 
-        pegarInformacoesSimulacao();
+        //pegarInformacoesSimulacao();
 
         criarMapas();
         calcularMapaPosicoes();
 
 		novaPartida();
         loopJogo();
-
-        if(mostrarGrafico) graficoBarras();
     }
 
 
@@ -107,29 +102,12 @@ public class Main{
         System.out.print("Quantidade de gerações: ");
         rodadas = Integer.parseInt(pegarEntrada());
         if(rodadas < 1) throw new IllegalArgumentException("O valor das rodadas da simulação não pode ser menor que 1");
-        melhoresFitness = new int[rodadas];
 
         limparConsole();
         System.out.println("1 - Mutação \n2 - Crossover");
         System.out.print("Escolha o método evolutivo: ");
         metodoEvolucao = Integer.parseInt(pegarEntrada());
         if(metodoEvolucao < 1 || metodoEvolucao > 2) throw new IllegalArgumentException("O valor fornecido está fora dos parâmetros aceitos");
-
-        limparConsole();
-        System.out.print("Mostrar gráfico final dos melhores fintess?[S/N]: ");
-        switch(pegarEntrada()){
-            case "s" : case "S":
-                mostrarGrafico = true;
-            break;
-
-            case "n" : case "N":
-                mostrarGrafico = false;
-            break;
-
-            default:
-                mostrarGrafico = false;
-            break;
-        }
     }
 
 
@@ -182,9 +160,7 @@ public class Main{
                 }
 
                 if(treinoGenetico.individuosVivos < 1){//proxima geração
-                    melhoresFitness[treinoGenetico.geracaoAtual] = treinoGenetico.escolherMelhorIndividuo().fitness;//grafico
                     if(rodadaAtual > rodadas-1) break;
-
                     System.out.println("Ajustando população");
 
                     if(metodoEvolucao == EVOLUCAO_CROSSOVER){
@@ -747,27 +723,5 @@ public class Main{
 
         //adicionar ouro
         agente.ouroMapa = new Ouro(ouro.getX(), ouro.getY());
-    }
-
-
-    public static void graficoBarras(){
-        JanelaGraficoBarras jGrafico = new JanelaGraficoBarras();
-
-        //normalizar dados
-        double maxAbs = 0;
-        for (int j = 0; j < melhoresFitness.length; j++) {
-            double absValue = Math.abs(melhoresFitness[j]);
-            if (absValue > maxAbs) {
-                maxAbs = absValue;
-            }
-        }
-        for (int j = 0; j < melhoresFitness.length; j++){
-            try{
-                melhoresFitness[j] = (int) (melhoresFitness[j] / maxAbs * (jGrafico.painel.getHeight()* 0.95 / 2));
-            }catch(ArithmeticException e){
-                melhoresFitness[j] = 0;
-            }
-        }
-        jGrafico.desenhar(melhoresFitness);
     }
 }
