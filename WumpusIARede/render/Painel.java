@@ -43,7 +43,7 @@ public class Painel extends JPanel{
    int yCamadaEntrada = 0;
    int yCamadaOculta = 0;
    int yCamadaSaida = 0;
-   int larguraDesenho = 25;
+   int larguraDesenho = 26;
    int alturaDesenho = larguraDesenho;
    int espacoVerticalEntreNeuronio = 8;
    int espacoHorizontalEntreCamadas = (int)(larguraDesenho * 3.6);
@@ -62,7 +62,7 @@ public class Painel extends JPanel{
    int r = 150;
    int g = 180;
    int b = 210;
-   Color corNeuronioAtivo = new Color(r, g, b, 220);
+   Color corNeuronioAtivo = new Color(r, g, b);
    Color corNeuronioInativo = new Color((int)(r * 0.4), (int)(g * 0.4), (int)(b * 0.4));
    Color corBordaNeuronio = Color.BLACK;
 
@@ -72,7 +72,7 @@ public class Painel extends JPanel{
    Color corTexto = new Color(r, g, b);
 
    //auxiliares
-   BasicStroke linhaDesenho = new BasicStroke(1.9f);
+   BasicStroke linhaDesenho = new BasicStroke(1.8f);
    File pastaRedes = new File("./melhores-redes/");
 
 
@@ -372,7 +372,7 @@ public class Painel extends JPanel{
       g2.setColor(corBordaNeuronio);
       g2.fillOval(x, y, larguraDesenho, alturaDesenho);
 
-      int borda = 2;
+      int borda = 3;
 
       g2.setColor(corNeuronioAtivo);
       g2.fillOval(x+borda, y+borda, larguraDesenho-(borda*2), alturaDesenho-(borda*2));
@@ -384,6 +384,6 @@ public class Painel extends JPanel{
       int yTexto = y + g2.getFont().getSize() + 2;
       
       g2.drawString("B", xTexto, yTexto);
-      g2.drawString("B", xTexto, yTexto+1);//deixar o dessenho mais espesso
+      g2.drawString("B", xTexto, yTexto+1);//deixar o desenho mais espesso
    }
 }

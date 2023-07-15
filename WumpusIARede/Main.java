@@ -24,9 +24,9 @@ public class Main{
     static String[][] mapaSensacoes;
 
     //simulações
-    static double tempoAtualizacao = 0.02f;
+    static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
-    static int rodadas = 200;
+    static int rodadas = 300;
 
     //elementos
     static Agente agente;
@@ -130,11 +130,10 @@ public class Main{
         janela = new Janela();
         janela.painel.melhorAgente = melhorAgente;
 
-        int i = 0; //contador
         try{
             while(rodadaAtual <= rodadas){
 
-                for(i = 0; i < treinoGenetico.tamanhoPopulacao; i++){//calcular uma ação de cada individuo
+                for(int i = 0; i < treinoGenetico.tamanhoPopulacao; i++){//calcular uma ação de cada individuo
                     if(treinoGenetico.individuos.get(i).vivo){
                         calcularMapaSensacoesAgente(treinoGenetico.individuos.get(i));
                         copiarSensacoesParaAgente(treinoGenetico.individuos.get(i));
@@ -203,21 +202,21 @@ public class Main{
     }
 
 
-    public static void imprimirPartida(AlgoritmoGenetico treinoGenetico){
+    public static void imprimirPartida(AlgoritmoGenetico treino){
         limparConsole();
-        System.out.println("Geração atual: " + treinoGenetico.geracaoAtual);
-        System.out.println("Individuos vivos: " + treinoGenetico.individuosVivos + "/" + treinoGenetico.individuos.size());
+        System.out.println("Geração atual: " + treino.geracaoAtual + "/" + (rodadas-1));
+        System.out.println("Individuos vivos: " + treino.individuosVivos + "/" + treino.individuos.size());
 
         System.out.println("\nMelhor individuo vivo");
         System.out.println("Fitness: " + melhorAgente.fitness);
         System.out.println("Ouro coletado: " + melhorAgente.getOuroColetado());
         System.out.println("Matou Wumpus: " + melhorAgente.getMatouWumpus());
-
+        
         mostrarMapa();
-        System.out.println("x: " + melhorAgente.getX() + " y: " + melhorAgente.getY());
-        System.out.println("Sentindo: {" + melhorAgente.getSensacoes() + "  }");
 
-        Auxiliares.imprimirarApenasSaidasRede(melhorAgente.rede);
+        System.out.println("Sentindo: {" + melhorAgente.getSensacoes() + "  }");
+        
+        Auxiliares.imprimirarApenasSaidaRede(melhorAgente.rede);
     }
 
 

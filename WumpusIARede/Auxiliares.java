@@ -25,12 +25,16 @@ public class Auxiliares{
    }
 
 
-   static void imprimirarApenasSaidasRede(RedeNeural rede){
-      System.out.println("\nSaida:");
+   static void imprimirarApenasSaidaRede(RedeNeural rede){
+      
+      System.out.println("Saida " + rede.getClass().getSimpleName() +  " = [");
+
+      String espacamento = "    ";
       for(int i = 0; i < rede.saida.neuronios.length; i++){
-         System.out.println("[n" + i + " " + rede.saida.neuronios[i].saida + "]");
+         System.out.println(espacamento + "n" + i + " = " + rede.saida.neuronios[i].saida);
       }
-      System.out.println();
+
+      System.out.println("]");
    }
 
 
