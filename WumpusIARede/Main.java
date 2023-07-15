@@ -26,7 +26,7 @@ public class Main{
     //simulações
     static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
-    static int rodadas = 300;
+    static int rodadas = 500;
 
     //elementos
     static Agente agente;
@@ -214,9 +214,10 @@ public class Main{
         
         mostrarMapa();
 
-        System.out.println("Sentindo: {" + melhorAgente.getSensacoes() + "  }");
+        System.out.println("Sentindo: {" + melhorAgente.getSensacoes() + "  }\n");
         
         Auxiliares.imprimirarApenasSaidaRede(melhorAgente.rede);
+        System.out.println();
     }
 
 
