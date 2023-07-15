@@ -1,6 +1,6 @@
 # Treinamento do agente de aprendizagem com uso de Redes Neurais Artificiais
 
-![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/83923273-7f41-4aba-901d-ef64dd68a352)
+![gifTreinamentoRedes](https://github.com/thag0/Projeto-Wumpus-Inteligencia-Computacional/assets/91092364/0cb70efa-a444-4223-b962-4711082751f1)
 
 Diretório destinado ao código fonte do algoritmo de treinamento para os agentes do mundo de Wumpus.
 
