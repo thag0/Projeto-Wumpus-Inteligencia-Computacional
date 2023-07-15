@@ -10,7 +10,7 @@ import entidade.Ouro;
 import entidade.Poco;
 import entidade.Wumpus;
 import render.Janela;
-import treino.TreinoGenetico;
+import treino.AlgoritmoGenetico;
 
 
 public class Main{
@@ -23,7 +23,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.25f;
+    static double tempoAtualizacao = 0.3f;
     static int rodadaAtual = 0;
     static int rodadas = 1000;
 
@@ -50,14 +50,15 @@ public class Main{
     
     //dados da rede
     static final int neuroniosEntrada = 10;
-    static final int neuroniosOcultas = 12;
+    static final int neuroniosOcultas = 9;
     static final int neuroniosSaida = 9;
-    static final int quantidadeOcultas = 4;
+    static final int quantidadeOcultas = 3;
 
     //informações
     static Janela janela;
-    static String nomeArquivoRede = "./melhores-redes/rede-fit-6255.dat";
-
+    static String nomeArquivoRede = "./melhores-redes/rede-fit-7880.dat";//passa por cima do ouro e depois volta
+    // static String nomeArquivoRede = "./melhores-redes/melhor-ag-4x4-1.dat";
+    
     public static void main(String[] args){
 		limparConsole();
 
@@ -65,8 +66,9 @@ public class Main{
             System.out.println("Arquivo não encontrado");
             System.exit(0);
         }
-        
+
         tamanhoMapa = 7;
+        
         criarMapas();
         calcularMapaPosicoes();
 
@@ -100,15 +102,16 @@ public class Main{
         janela = new Janela();
         janela.painel.melhorAgente = agente;
         copiarElementosParaAgente(agente, wumpus, pocos, ouro);
-        TreinoGenetico treinoGenetico = new TreinoGenetico(1);
+        AlgoritmoGenetico treinoGenetico = new AlgoritmoGenetico(1);
         try{
             while(rodadaAtual < rodadas){
 
                 if(agente.vivo){
-
+                    janela.desenhar(agente, treinoGenetico, 0, 0);
                     calcularMapaSensacoesAgente(agente);
                     calcularSensacoes(agente);
                     atualizarDados(agente, dadosAmbiente);
+
                     
                     individuoMorreu = agente.calcularAcao(dadosAmbiente);
 
@@ -131,8 +134,6 @@ public class Main{
                 }
             
                 imprimirPartida();
-                janela.desenhar(agente, treinoGenetico, 0, 0);
-            
                 Thread.sleep((long) (1000 * tempoAtualizacao));
             }
 
@@ -160,7 +161,7 @@ public class Main{
         System.out.println("x: " + agente.getX() + " y: " + agente.getY());
         System.out.println("Sentindo: {" + agente.getSensacoes() + "  }");
 
-        Auxiliares.imprimirarApenasSaidasRede(agente.rede);
+        Auxiliares.imprimirarApenasSaidaRede(agente.rede);
     }
 
 

@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import entidade.Agente;
 import rna.RedeNeural;
-import treino.TreinoGenetico;
+import treino.AlgoritmoGenetico;
 
 public class Painel extends JPanel{
    final int largura = 640;
@@ -64,10 +64,12 @@ public class Painel extends JPanel{
    int b = 210;
    Color corNeuronioAtivo = new Color(r, g, b);
    Color corNeuronioInativo = new Color((int)(r * 0.4), (int)(g * 0.4), (int)(b * 0.4));
-   Color corBordaNeuronio = Color.black;
+   Color corBordaNeuronio = Color.BLACK;
 
    Color corConexaoAtiva = new Color((int)(r * 0.7), (int)(g * 0.7), (int)(b * 0.7));
    Color corConexaoInativa = new Color((int)(r * 0.25), (int)(g * 0.25), (int)(b * 0.25));
+
+   Color corTexto = new Color(r, g, b);
 
    //auxiliares
    BasicStroke linhaDesenho = new BasicStroke(1.9f);
@@ -75,7 +77,7 @@ public class Painel extends JPanel{
 
 
    public Painel(){
-      setBackground(new Color(20, 20, 20));
+      setBackground(new Color(25, 25, 25));
       setPreferredSize(new Dimension(largura, altura));
       setFocusable(true);
       setDoubleBuffered(true);
@@ -88,7 +90,7 @@ public class Painel extends JPanel{
    }
 
 
-   public void desenhar(Agente agente, TreinoGenetico treinoGenetico, long redesQueGanharam, int metodoEvolucao){
+   public void desenhar(Agente agente, AlgoritmoGenetico treinoGenetico, long redesQueGanharam, int metodoEvolucao){
       //melhor agente
       melhorAgente = agente;
       rede = agente.rede;
@@ -118,7 +120,7 @@ public class Painel extends JPanel{
       yCamadaSaida = y0 + (altura/2) - (larguraDesenho * (melhorAgente.rede.saida.neuronios.length+1)) + (espacoVerticalEntreNeuronio * (melhorAgente.rede.saida.neuronios.length-1));
 
       //desenhar informações
-      g2.setColor(corNeuronioAtivo);
+      g2.setColor(corTexto);
       g2.setFont(getFont().deriveFont(15f));
 
       //primeira linha
@@ -160,8 +162,8 @@ public class Painel extends JPanel{
 
       //desenho para calcular as cooredanas das conexões
       desenharCamadaEntrada(g2);    
-      desenharOcultas(g2);
-      desenharSaida(g2);
+      desenharCamadasOcultas(g2);
+      desenharCamadaSaida(g2);
       
       //conexões entre os neuronios
       g2.setStroke(linhaDesenho);
@@ -261,18 +263,8 @@ public class Painel extends JPanel{
          }
       }
    }
-
-
-   private void desenharNeuronio(Graphics2D g2, int x, int y, double valorSaida){
-      g2.setColor(corBordaNeuronio);
-      g2.fillOval(x, y, larguraDesenho, alturaDesenho);
-
-      if(valorSaida > 0) g2.setColor(corNeuronioAtivo);
-      else g2.setColor(corNeuronioInativo);
-      g2.fillOval(x+2, y+2, larguraDesenho-4, alturaDesenho-4);  
-   }
-
-
+   
+   
    private void desenharCamadaEntrada(Graphics2D g2){
       x = x0;
       y = yCamadaEntrada;
@@ -294,35 +286,46 @@ public class Painel extends JPanel{
          else if(contador == 4) g2.drawString("Brilho", (x+xTexto), (y+yTexto));
          else if(contador == 5) g2.drawString("Fedor", (x+xTexto), (y+yTexto));
          else if(contador == 6) g2.drawString("Brisa", (x+xTexto), (y+yTexto));
-
+         
          //informações do agente
          else if(contador == 7) g2.drawString("Ouro pego", (x+xTexto), (y+yTexto));
          else if(contador == 8) g2.drawString("Matou Wumpus", (x+xTexto), (y+yTexto));
          else if(contador == 9) g2.drawString("Tem flecha", (x+xTexto), (y+yTexto));
-         else g2.drawString("Bias", (x+xTexto), (y+yTexto));
-
+         
          //salvar coordenada do centro do desenho do neuronio
          coordEntrada.add(new Coordenada(x+larguraDesenho, y+(larguraDesenho/2), rede.entrada.neuronios[contador].saida));
-         desenharNeuronio(g2, x, y, rede.entrada.neuronios[contador].saida);
+
+         if(contador == rede.entrada.neuronios.length-1){
+            desenharNeuronioBias(g2, x, y);
+         }else{
+            desenharNeuronio(g2, x, y, rede.entrada.neuronios[contador].saida);
+         }
          y += larguraDesenho + espacoVerticalEntreNeuronio;
       }
+      
    }
-
-
-   private void desenharOcultas(Graphics2D g2){
+   
+   
+   private void desenharCamadasOcultas(Graphics2D g2){
       x += espacoHorizontalEntreCamadas;
       y = yCamadaOculta;
-
+      
       coordOcultas.clear();
       for(contador = 0; contador < rede.ocultas.length; contador++){//percorrer ocultas
-
+         
          // coordOcultas.get(contador).clear();//limpar lista da camada atual pra não estourar a memória
          coordOcultas.add(new ArrayList<>());
          for(contador2 = 0; contador2 < rede.ocultas[contador].neuronios.length; contador2++){//percorrer neuronios de uma oculta
             
             //salvar coordenada do centro do desenho do neuronio
-            coordOcultas.get(contador).add(new Coordenada(x+larguraDesenho, y+(larguraDesenho/2), rede.ocultas[contador].neuronios[contador2].saida));  
-            desenharNeuronio(g2, x, y, rede.ocultas[contador].neuronios[contador2].saida);
+            coordOcultas.get(contador).add(new Coordenada(x+larguraDesenho, y+(larguraDesenho/2), rede.ocultas[contador].neuronios[contador2].saida));
+            
+            if(contador2 ==  rede.ocultas[contador].neuronios.length-1){
+               desenharNeuronioBias(g2, x, y);
+               
+            }else{
+               desenharNeuronio(g2, x, y, rede.ocultas[contador].neuronios[contador2].saida);
+            }
             y += larguraDesenho + espacoVerticalEntreNeuronio;
          }
          x += espacoHorizontalEntreCamadas;
@@ -330,15 +333,15 @@ public class Painel extends JPanel{
       }
    }
 
-
-   private void desenharSaida(Graphics2D g2){
+   
+   private void desenharCamadaSaida(Graphics2D g2){
       y = yCamadaSaida;
       
       coordSaida.clear();
       for(contador = 0; contador < rede.saida.neuronios.length; contador++){
          coordSaida.add(new Coordenada(x+larguraDesenho, y+(larguraDesenho/2), rede.saida.neuronios[contador].saida));
          desenharNeuronio(g2, x, y, rede.saida.neuronios[contador].saida);
-
+         
          if(contador == 0) g2.drawString("Mover norte", (x+40), (y+13));
          if(contador == 1) g2.drawString("Mover sul", (x+40), (y+13));
          if(contador == 2) g2.drawString("Mover oeste", (x+40), (y+13));
@@ -350,5 +353,37 @@ public class Painel extends JPanel{
          if(contador == 8) g2.drawString("Pegar", (x+40), (y+13));
          y += larguraDesenho + espacoVerticalEntreNeuronio; 
       }
+   }
+   
+   
+   private void desenharNeuronio(Graphics2D g2, int x, int y, double valorSaida){
+      g2.setColor(corBordaNeuronio);
+      g2.fillOval(x, y, larguraDesenho, alturaDesenho);
+
+      int borda = 3;
+
+      if(valorSaida > 0) g2.setColor(corNeuronioAtivo);
+      else g2.setColor(corNeuronioInativo);
+      g2.fillOval(x+borda, y+borda, larguraDesenho-(borda*2), alturaDesenho-(borda*2));  
+   }
+   
+   
+   private void desenharNeuronioBias(Graphics2D g2, int x, int y){
+      g2.setColor(corBordaNeuronio);
+      g2.fillOval(x, y, larguraDesenho, alturaDesenho);
+
+      int borda = 2;
+
+      g2.setColor(corNeuronioAtivo);
+      g2.fillOval(x+borda, y+borda, larguraDesenho-(borda*2), alturaDesenho-(borda*2));
+
+      g2.setColor(Color.black);
+
+      //levar em consideração o tamanho da fonte
+      int xTexto = x + (g2.getFont().getSize()/2);
+      int yTexto = y + g2.getFont().getSize() + 2;
+      
+      g2.drawString("B", xTexto, yTexto);
+      g2.drawString("B", xTexto, yTexto+1);//deixar o dessenho mais espesso
    }
 }
