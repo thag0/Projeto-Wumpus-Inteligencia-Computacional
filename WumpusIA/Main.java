@@ -14,7 +14,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.05f;
+    static double tempoAtualizacao = 0.125f;
     static int rodadaAtual = 0;
     static int rodadas = 100;
     static int[] movimentosFeitos = new int[4];
