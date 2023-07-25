@@ -14,7 +14,7 @@ public class Main{
     static String mapaSensacoes[][];
 
     //simulações
-    static double tempoAtualizacao = 0.9f;
+    static double tempoAtualizacao = 0.1f;
     static int rodadaAtual = 0;
     static int rodadas = 100;
     static int[] movimentosFeitos = new int[4];
@@ -35,7 +35,7 @@ public class Main{
     //controle de geração dos poços
     static boolean paredeOcupada = false;
 
-    static String[] posicoesMapa = {"x", ".", "+"};
+    static String[] posicoesMapa = {"canto", "parede", "centro"};
 
     public static void main(String[] args){
 		limparConsole();
@@ -70,7 +70,7 @@ public class Main{
 
 
     public static void loopJogo(){
-        agente.preencherMemoria(agente.getX(), agente.getY(), mapaSensacoes);//primeira iteração
+        agente.preencherMemoria(agente.getX(), agente.getY(), mapaSensacoes, mapaPosicoes);//primeira iteração
         try{
             while(rodadaAtual <= rodadas){
                 imprimirPartida();
@@ -90,10 +90,10 @@ public class Main{
 
 
     public static void moverAgente(){
-        boolean automatico = false;
+        boolean automatico = true;
 
         if(automatico){
-            agente.calcularMovimento(tamanhoMapa, movimentosFeitos, mapaSensacoes);
+            agente.calcularMovimento(tamanhoMapa, movimentosFeitos, mapaSensacoes, mapaPosicoes);
         
         }else{
             tempoAtualizacao = 0;
@@ -106,7 +106,7 @@ public class Main{
                     case "d": agente.mover("leste"); break;
                     case "n": novaPartida(); break;
                 }
-                agente.preencherMemoria(agente.getX(), agente.getY(), mapaSensacoes);
+                agente.preencherMemoria(agente.getX(), agente.getY(), mapaSensacoes, mapaPosicoes);
             }catch(Exception e){}
         }
 
@@ -116,6 +116,7 @@ public class Main{
     //controle sobre reinicio de partida
     public static void novaPartida(){
         gerarEntidadesFixas();
+        // gerarEntidadesAleatorias();
         calcularMapaSensacoes();
         rodadaAtual++;
     }
@@ -126,25 +127,12 @@ public class Main{
         System.out.println("Rodada atual: " + rodadaAtual);
 
         mostrarMapa();
-        System.out.println("x0: " + agente.ultimaPosicao[0] + " y0: " + agente.ultimaPosicao[1]);
+        System.out.println("x0: " + agente.memoria.ultimoX + " y0: " + agente.memoria.ultimoY);
         System.out.println("x: " + agente.getX() + " y: " + agente.getY());
         //mostrarMapaPosicoes();
         //mostrarMapaSensacoes();
 
-        for(int i = 0; i < tamanhoMapa; i++){
-            for(int j = 0; j < tamanhoMapa; j++){
-                System.out.print("[" + agente.memoriaSensacoes[i][j] + "]");
-            }
-            System.out.println();
-        }
-
-        System.out.println("----------------------");
-        for(int i = 0; i < tamanhoMapa; i++){
-            for(int j = 0; j < tamanhoMapa; j++){
-                System.out.print("[" + agente.memoriaElementos[i][j] + "]");
-            }
-            System.out.println();
-        }
+        agente.imprimirMapa();
 
         System.out.println("Status do agente");
         agente.getInformacoes();
@@ -172,7 +160,7 @@ public class Main{
             agente.setMortesPeloWumpus(mortesPeloWumpus);
         }  
 
-        mapa2();
+        mapa1();
     }
 
 
@@ -190,12 +178,12 @@ public class Main{
 
     public static void mapa2(){
         wumpus.clear();
-        wumpus.add(new Wumpus(3, 3));
+        wumpus.add(new Wumpus(1, 1));
 
         ouro = new Ouro(0, 0);
 
         pocos.clear();
-        pocos.add(new Poco(2, 2));  
+        pocos.add(new Poco(0, 2));  
     }
 
 
@@ -301,16 +289,11 @@ public class Main{
 				if(coluna == 0) conteudo = "|";
 				else conteudo = " ";
 
-                if(entidadeExistente(agente, linha, coluna)) conteudo += agente.getSimbolo();                
+                if(entidadeExistente(agente, linha, coluna)) conteudo += agente.getSimbolo();         
                 else if(wumpusExistente(linha, coluna)){
-                    for(int i = 0; i < wumpus.size(); i++){
-                        if(wumpus.get(i).getStatus()){
-                            conteudo += wumpus.get(i).getSimbolo();
-                            break;
-                        }
-                    }
+                    conteudo += wumpus.get(0).getSimbolo();
                 }
-                else if(entidadeExistente(ouro, linha, coluna) && !ouro.getColetado()) conteudo += ouro.getSimbolo();
+                else if(entidadeExistente(ouro, linha, coluna) && !agente.getOuroColetado()) conteudo += ouro.getSimbolo();
                 else if(pocoExistente(linha, coluna)) conteudo += pocos.get(0).getSimbolo();
                 else conteudo += mapa[linha][coluna];
                 
@@ -320,7 +303,7 @@ public class Main{
             }
             System.out.println();
         }
-        System.out.println();      
+        System.out.println();
     }
 
 
@@ -381,7 +364,7 @@ public class Main{
 
 
     public static boolean wumpusExistente(int x, int y){
-        for(int i = 0; i < wumpus.size(); i++) if(x == wumpus.get(i).getX() && y == wumpus.get(i).getY()) return true;
+        for(int i = 0; i < wumpus.size(); i++) if(x == wumpus.get(i).getX() && y == wumpus.get(i).getY() && wumpus.get(i).getStatus()) return true;
         return false;
     }
 
@@ -507,6 +490,7 @@ public class Main{
         if(entidadeExistente(ouro, agente.getX(), agente.getY()) && (!ouro.getColetado())){
             agente.PegarOuro(ouro, tamanhoMapa);
 			calcularMapaSensacoes();
+            agente.preencherMemoria(agente.getX(), agente.getY(), mapaSensacoes, mapaPosicoes);
 
 			imprimirPartida();
 			System.out.println("Ouro pego");
